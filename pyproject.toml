@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "algolabra"
+version = "0.1.0"
+description = ""
+authors = ["Jenni Jokinen <153839491+jokijen@users.noreply.github.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.5"
+pylint = "^3.3.5"
+autopep8 = "^2.3.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
