@@ -4,6 +4,6 @@ Projekti kurssille "Aineopintojen harjoitustyö: Algoritmit ja tekoäly" (Helsin
 
 ### Linkkejä
 
-[Dokumentaatio](./Documents)
+[Dokumentaatio](./documents)
 
-[Määrittelydokumentti](./Documents/Maarittelydokumentti.md)
+[Määrittelydokumentti](./documents/Maarittelydokumentti.md)
