@@ -18,11 +18,11 @@ def print_instructions():
     print("How to use SciCalc (in a nutshell):")
     print("Input a mathematical expression and hit enter to get the solution.")
     print("\nAllowed inputs:")
-    print("* Numbers 0-9 (integer or floating point using the dot \".\" as the decimal separator)")
-    print("* Operators: plus +, minus -, muliplication *, division /, modulo mod or %, exponent ^ or **")
-    print("* Functions: square root sqrt(), sine sin(), minimum min(), maximum max()")
-    print("* Other characters: brackets ( ), and comma for max and min e.g. min(1, 9)")
-    print("\nYou can also use the characters A-Z as variables and define them to have custom values")
+    print("* Numbers 0-9 (integer or floating point using the dot '.' as the decimal separator)")
+    print("* Operators: plus '+', minus '-', muliplication '*', division '/', modulo 'mod' or '%', exponent '^' or '**'")
+    print("* Functions: square root 'sqrt()', sine 'sin()', minimum 'min()', maximum 'max()'")
+    print("* Other characters: brackets '(', ')', and comma ',' for max and min e.g. 'min(1, 9)'")
+    print("\nYou can also use capital letters as variables and define them to have custom values")
     print("\nWhat would you like to do next?\n")
 
 
