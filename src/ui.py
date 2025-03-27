@@ -19,8 +19,8 @@ def print_instructions():
     print("Input a mathematical expression and hit enter to get the solution.")
     print("\nAllowed inputs:")
     print("* Numbers 0-9 (integer or floating point using the dot '.' as the decimal separator)")
-    print("* Operators: plus '+', minus '-', muliplication '*', division '/', modulo 'mod' or '%', exponent '^' or '**'")
-    print("* Functions: square root 'sqrt()', sine 'sin()', minimum 'min()', maximum 'max()'")
+    print("* Operators: plus '+', minus '-', muliplication '*', division '/', modulo 'mod, exponent '^'")
+    print("* Functions: square root 'sqrt(x)', sine 'sin(x)', minimum 'min(x, y)', maximum 'max(x, y)'")
     print("* Other characters: brackets '(', ')', and comma ',' for max and min e.g. 'min(1, 9)'")
     print("\nYou can also use capital letters as variables and define them to have custom values")
     print("\nWhat would you like to do next?\n")
@@ -32,6 +32,18 @@ def print_commands():
     print("2: Define a variable")
     print("3: List all defined variables")
     print("q: Quit SciCalc\n")
+
+
+def print_expression_help():
+    print("\nExpressions should be written with care in proper infix notation.")
+    print("Use a period '.' as a decimal separator, and ensure brackets are correctly paired.")
+    print("\nAllowed inputs:")
+    print("* Numbers 0-9 (integer or floating point using the dot '.' as the decimal separator)")
+    print("* Operators: plus '+', minus '-', muliplication '*', division '/', modulo 'mod, exponent '^'")
+    print("* Functions: square root 'sqrt(x)', sine 'sin(x)', minimum 'min(x, y)', maximum 'max(x, y)'")
+    print("* Other characters: brackets '(', ')', and comma ',' for max and min e.g. 'min(1, 9)'")
+    print("\nExample expression: '3 * 4 + -5.67 / ( sqrt(9) + 2 ) * min(-5, -2.3)\n")
+
 
 
 def main():
@@ -48,11 +60,31 @@ def main():
             break
 
         elif user_input == "1":
-            pass
+            while True:
+                var_input = input("Give a mathematical expression to evaluate ('h' instructions, 'q' cancel):\n")
+
+                if var_input == "q": 
+                    break
+
+                elif var_input == "h":
+                    print_expression_help()
+
+                else:
+                    pass
+
+                # evaluator = InputValidator()
+                # sy = ShuntingYard()
+                # rpn_evaluator = RPNEvaluator
+
+                # validated_expression = evaluator.validate(user_expression)
+                # rpn_expression = sy.generate_RPN(validated_expression)
+                # result = rpn_evaluator(rpn_expression)
+
+                # return result 
         
         elif user_input == "2": # User defines a variable
             while True:
-                var_input = input("Which variable A-Z would you like to define? (e.g. 'A'): ")
+                var_input = input("Which variable A-Z would you like to define? (e.g. 'A', or 'q' to cancel): ")
 
                 if var_input == "q":
                     break
