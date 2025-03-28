@@ -1,5 +1,5 @@
 import sys
-from core.input_validator import validate_var_value, InputValidator
+from core.input_validator import InputValidator
 from core.exceptions import InvalidExpressionException
 """
 User interface for the calculator.
@@ -67,7 +67,7 @@ def main():
             while True:
                 expression_input = input("\nGive a mathematical expression to evaluate ('h' instructions, 'q' cancel):\n>>> ")
                 print("")
-                
+
                 if expression_input == "q": 
                     break
 
@@ -104,7 +104,7 @@ def main():
                         val_input = input(f"\nGive value for {var_input}: ")
                         
                         try: # Set variable if it is an int or float number, else give error
-                            valid_value = validate_var_value(val_input)
+                            valid_value = InputValidator.validate_var_value(val_input)
                             USER_VARS.update({var_input: valid_value})
                             print("\nVariable set!")
                             break
