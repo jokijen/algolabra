@@ -22,9 +22,11 @@ Olen palauttanut mieleen monia Python synytaksiin liittyviä yksityiskohtia. Kä
 
 Tuleeko käyttäjän voida määrittää muuttujan arvoksi jotain monimutkaisempaa, kuin lukuarvo? esim. A = 2 vs. A = 2+2*pi 
 
-Toistuvasti mietin teenkö oikeita ratkaisuja ja missä menee järkevän koodin ja spagetin raja. Pyrin modulaarisuuten ja siihen että asiat tehdään omissa dedikoiduissa funktioissa/metodeissa. Ottaisin mielelläni vastaan palautetta koodin laadusta ja koko lähestymistavasta käyttäjän syötteen kanssa. Suunnitelmissa on seuraavaksi iteroida merkkijono läpi ja tunnistaa sieltä validit "tokenit", jotka sitten lisätään listaan ja palautetaan, tai palautetaan kuvaava virhe, josta käy ilmi miksi syöte ei ole validi. 
+Toistuvasti mietin teenkö oikeita ratkaisuja ja missä menee järkevän koodin ja spagetin raja. Pyrin modulaarisuuten ja siihen että asiat tehdään niiden omissa dedikoiduissa funktioissa/metodeissa. Ottaisin mielelläni vastaan palautetta koodin laadusta ja koko lähestymistavasta käyttäjän syötteen kanssa. En ole tyytyväinen UI:hin, sillä siellä on liian paljon kaikkea.
+
+Luokan "InputValidator" metodissa "validate_expression" olisi seuraavaksi suunnitelmissa iteroida merkkijono läpi ja tunnistaa sieltä validit "tokenit", jotka sitten lisätään listaan ja palautetaan. Vaihtoehtoisesti, jos syöte ei ole validi, niin palautetaan kuvaava virhe, josta käy ilmi miksi näin on.
 
 
 ## Mitä teen seuraavaksi?
 
-Jatkan perustoimintojen parissa. Yritän myös lisätä testejä.
+Jatkan perustoimintojen parissa. Yritän myös lisätä testejä ja saada GitHub Actionsin + Codecovin pystyyn.
