@@ -1,5 +1,6 @@
 import sys
-from core.input_validator import validate_var_value
+from core.input_validator import validate_var_value, InputValidator
+from core.exceptions import InvalidExpressionException
 """
 User interface for the calculator.
 """
@@ -36,14 +37,17 @@ def print_commands():
 
 def print_expression_help():
     print("\nExpressions should be written with care in proper infix notation.")
+    print("Minimum length: 3 characters")
     print("Use a period '.' as a decimal separator, and ensure brackets are correctly paired.")
     print("\nAllowed inputs:")
     print("* Numbers 0-9 (integer or floating point using the dot '.' as the decimal separator)")
     print("* Operators: plus '+', minus '-', muliplication '*', division '/', modulo 'mod, exponent '^'")
     print("* Functions: square root 'sqrt(x)', sine 'sin(x)', minimum 'min(x, y)', maximum 'max(x, y)'")
     print("* Other characters: brackets '(', ')', and comma ',' for max and min e.g. 'min(1, 9)'")
-    print("\nExample expression: '3 * 4 + -5.67 / ( sqrt(9) + 2 ) * min(-5, -2.3)\n")
-
+    print("\nExample expressions:")
+    print("'-2*-5.7'")
+    print("'8.55 / max(sqrt(9), 4)+pi*3'")
+    print("'3 * 4 + -5.67 / ( sin(9) + 2 ) * min(-5, -2.3)'")
 
 
 def main():
@@ -52,39 +56,43 @@ def main():
 
     while True:
         print_commands()
-        user_input = input("Please give a command:\n")
-        print("\n**********************************\n")
+        user_input = input("Please give a command:\n>>> ")
+        print("\n**********************************")
 
         if user_input == "q":
-            print("*** Quitting the program. Bye! ***\n")
+            print("\n*** Quitting the program. Bye! ***\n")
             break
 
         elif user_input == "1":
             while True:
-                var_input = input("Give a mathematical expression to evaluate ('h' instructions, 'q' cancel):\n")
-
-                if var_input == "q": 
+                expression_input = input("\nGive a mathematical expression to evaluate ('h' instructions, 'q' cancel):\n>>> ")
+                print("")
+                
+                if expression_input == "q": 
                     break
 
-                elif var_input == "h":
+                elif expression_input == "h":
                     print_expression_help()
 
                 else:
-                    pass
+                    try:
+                        validator = InputValidator(USER_VARS)
+                        # sy = ShuntingYard()
+                        # rpn_evaluator = RPNEvaluator
 
-                # evaluator = InputValidator()
-                # sy = ShuntingYard()
-                # rpn_evaluator = RPNEvaluator
+                        validated_expression = validator.validate_expression(expression_input)
+                        # rpn_expression = sy.generate_RPN(validated_expression)
+                        # result = rpn_evaluator(rpn_expression)
 
-                # validated_expression = evaluator.validate(user_expression)
-                # rpn_expression = sy.generate_RPN(validated_expression)
-                # result = rpn_evaluator(rpn_expression)
+                        # print(result)
+                        print(validated_expression)
 
-                # return result 
+                    except InvalidExpressionException as e:
+                        print(f"InvalidExpressionException: {e}")
         
         elif user_input == "2": # User defines a variable
             while True:
-                var_input = input("Which variable A-Z would you like to define? (e.g. 'A', or 'q' to cancel): ")
+                var_input = input("\nWhich variable A-Z would you like to define? (e.g. 'A', or 'q' to cancel):\n>>> ")
 
                 if var_input == "q":
                     break
@@ -104,11 +112,11 @@ def main():
                             print("\nInvalid input. Please enter a number (e.g. '1.45')")
                     break
                 else:
-                    print("\nThat is not a valid variable. Please try again.\n")
+                    print("\nThat is not a valid variable. Please try again.")
 
 
         elif user_input == "3":
-            print("Defined variables:\n")
+            print("\nDefined variables:\n")
             if not USER_VARS: 
                 print("You have no defined variables\n")
                 continue
@@ -116,7 +124,7 @@ def main():
                 print(f"{key} = {value}")
         
         else:
-            print("Nice try! That is not a valid command. Try again. \n")
+            print("\nNice try! That is not a valid command. Try again.")
 
         print("\n**********************************\n")
 
