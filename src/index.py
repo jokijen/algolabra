@@ -9,5 +9,5 @@ if __name__ == "__main__":
         print("\n*** Quitting the program. Bye! ***")
         sys.exit()
     except Exception as e:
-        print("There was an error: {e}")
+        print(f"There was an error: {e}")
         sys.exit(1)
