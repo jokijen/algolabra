@@ -15,16 +15,20 @@ def print_intro():
     print("***************************************************************\n")
 
 
+def print_separator():
+    print("\n" + "*" * 50)
+
+
 def print_instructions():
     print("How to use SciCalc (in a nutshell):")
     print("Input a mathematical expression and hit enter to get the solution.")
     print("\nAllowed inputs:")
     print("* Numbers 0-9 (integer or floating point using the dot '.' as the decimal separator)")
-    print("* Operators: plus '+', minus '-', muliplication '*', division '/', modulo 'mod, exponent '^'")
-    print("* Functions: square root 'sqrt(x)', sine 'sin(x)', minimum 'min(x, y)', maximum 'max(x, y)'")
+    print("* Constants: 'pi'")
+    print("* Operators: plus '+', minus '-', muliplication '*', division '/', exponent '**'")
+    print("* Functions: square root 'sqrt(x)', sine 'sin(x)', cosine 'cos(x)', minimum 'min(x, y)', maximum 'max(x, y)'")
     print("* Other characters: brackets '(', ')', and comma ',' for max and min e.g. 'min(1, 9)'")
     print("\nYou can also use capital letters as variables and define them to have custom values")
-    print("\nWhat would you like to do next?\n")
 
 
 def print_commands():
@@ -36,16 +40,13 @@ def print_commands():
 
 
 def print_expression_help():
+    print_instructions()
     print("\nExpressions should be written with care in proper infix notation.")
     print("Minimum length: 3 characters")
     print("Use a period '.' as a decimal separator, and ensure brackets are correctly paired.")
-    print("\nAllowed inputs:")
-    print("* Numbers 0-9 (integer or floating point using the dot '.' as the decimal separator)")
-    print("* Operators: plus '+', minus '-', muliplication '*', division '/', modulo 'mod, exponent '^'")
-    print("* Functions: square root 'sqrt(x)', sine 'sin(x)', minimum 'min(x, y)', maximum 'max(x, y)'")
-    print("* Other characters: brackets '(', ')', and comma ',' for max and min e.g. 'min(1, 9)'")
+    print("Be explicit with multiplication, e.g. use '3*A' instead of '3A")
     print("\nExample expressions:")
-    print("'-2*-5.7'")
+    print("'-2**2*-5.7'")
     print("'8.55 / max(sqrt(9), 4)+pi*3'")
     print("'3 * 4 + -5.67 / ( sin(9) + 2 ) * min(-5, -2.3)'")
 
@@ -53,11 +54,12 @@ def print_expression_help():
 def main():
     print_intro()
     print_instructions()
+    print("\nWhat would you like to do next?\n")
 
     while True:
         print_commands()
         user_input = input("Please give a command:\n>>> ")
-        print("\n**********************************")
+        print_separator()
 
         if user_input == "q":
             print("\n*** Quitting the program. Bye! ***\n")
@@ -80,6 +82,11 @@ def main():
                         # sy = ShuntingYard()
                         # rpn_evaluator = RPNEvaluator
 
+                        # TESTING: Valid:
+                        # expression_input = "45.78- -56.7**sin(D)/sqrt(-9)+-max(3.5,-70)*pi*-6" #For testing
+                        # Invalid:
+                        # expression_input = "45.78- -56.7**sin(D)/sqrt(-9)+-max(3.5,-70)*pi*abc--6" #For testing
+
                         validated_expression = validator.validate_expression(expression_input)
                         # rpn_expression = sy.generate_RPN(validated_expression)
                         # result = rpn_evaluator(rpn_expression)
@@ -98,7 +105,7 @@ def main():
                     break
 
                 # Ensure that user gave an uppercase letter
-                if var_input.isupper() and len(var_input) == 1:
+                if InputValidator.validate_var_character(var_input):
 
                     while True:
                         val_input = input(f"\nGive value for {var_input}: ")
@@ -126,5 +133,4 @@ def main():
         else:
             print("\nNice try! That is not a valid command. Try again.")
 
-        print("\n**********************************\n")
-
+        print_separator()
