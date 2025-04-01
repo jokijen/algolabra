@@ -52,6 +52,10 @@ def print_expression_help():
 
 
 def main():
+    validator = InputValidator(USER_VARS)
+    # sy = ShuntingYard()
+    # rpn_evaluator = RPNEvaluator
+
     print_intro()
     print_instructions()
     print("\nWhat would you like to do next?\n")
@@ -78,10 +82,6 @@ def main():
 
                 else:
                     try:
-                        validator = InputValidator(USER_VARS)
-                        # sy = ShuntingYard()
-                        # rpn_evaluator = RPNEvaluator
-
                         # TESTING: Valid:
                         # expression_input = "45.78- -56.7**sin(D)/sqrt(-9)+-max(3.5,-70)*pi*-6" #For testing
                         # Invalid:
@@ -105,15 +105,16 @@ def main():
                     break
 
                 # Ensure that user gave an uppercase letter
-                if InputValidator.validate_var_character(var_input):
+                if validator.validate_var_character(var_input):
 
                     while True:
                         val_input = input(f"\nGive value for {var_input}: ")
                         
                         try: # Set variable if it is an int or float number, else give error
-                            valid_value = InputValidator.validate_var_value(val_input)
+                            valid_value = validator.validate_var_value(val_input)
                             USER_VARS.update({var_input: valid_value})
-                            print("\nVariable set!")
+                            validator.update_user_vars(USER_VARS)
+                            print(f"\nVariable {var_input} = {valid_value} set!")
                             break
                         except ValueError:
                             print("\nInvalid input. Please enter a number (e.g. '1.45')")
