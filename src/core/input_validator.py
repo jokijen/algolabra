@@ -48,7 +48,7 @@ class InputValidator():
         return False
 
 
-    def validate_var_value(self, val_input: str):
+    """def validate_var_value(self, val_input: str):
         # Takes user provided number value of type str as input and returns it as int or float if valid
         valid_value = float(val_input)
 
@@ -56,6 +56,7 @@ class InputValidator():
             valid_value = int(valid_value)
 
         return valid_value
+    """
 
 
     def validate_length(self, user_expression:str):
@@ -87,14 +88,28 @@ class InputValidator():
             raise InvalidExpressionException("The expression contains invalid characters!")
 
 
-    def validate_used_variables(self, tokens:list):
-        pass
+    def validate_used_variables(self, used_variables:set, tokens:list):
+        for var in used_variables:
+            if not var in self.user_variables:
+                raise InvalidExpressionException("The expression contains an undefined variable!")
 
-    def tokenise_variables(self, tokens:list):
-        pass
+
+    def tokenise_variables(self, used_variables:set, tokens:list):
+        expanded_tokens = []
+
+        for token in tokens:
+            if token in self.user_variables:
+                var_expression = self.user_variables[token]
+                tokenised_var = self.tokenise_expression(var_expression, False)
+                expanded_tokens.extend(tokenised_var)
+            else:
+                expanded_tokens.append(token)
+        
+        print(expanded_tokens)
+        return expanded_tokens
 
 
-    def tokenise_expression(self, user_expression:str):
+    def tokenise_expression(self, user_expression:str, full_expression=True):
         # Takes mathematical expression as input
         # Returns the expression as a list of tokens
         tokens = []
@@ -104,7 +119,7 @@ class InputValidator():
             | (?P<float>\d+\.\d+)       # Match positive floats
             | (?P<integer>\d+\.?)       # Match positive integers
             | (?P<negative_sign>[,])    # Match the minus sign
-            | (?P<varible>[A-Z])        # Match variables A-Z
+            | (?P<variable>[A-Z])       # Match variables A-Z
             | (?P<constant>pi)          # Match constants
             | (?P<function>cos|sin|sqrt|min|max) # Match functions
             | (?P<operator>\*\*|[+\-*/]) # Match operators
@@ -114,28 +129,35 @@ class InputValidator():
         """, re.VERBOSE)
 
         tokens = pattern.findall(user_expression)
+
         token_list = [token for group in tokens for token in group if token]
-
-        # Validate variables used in the exression and convert them into tokens
-        #self.validate_used_variables(token_list)
-        #self.tokenise_variables(token_list)
-
+        
         self.check_for_invalid_characters(user_expression, token_list)
         
-        return token_list
+        # If only tokenising a user variable
+        if not full_expression:
+            return token_list
+
+        # Validate variables used in the exression and convert them into tokens
+        used_variables = {element[4] for element in tokens if element[4]}
+        self.validate_used_variables(used_variables, token_list)
+        complete_token_list = self.tokenise_variables(used_variables, token_list)
+
+        return complete_token_list
 
 
     def validate_expression(self, user_expression:str):
         # Takes mathematical expression as input
         # Returns the expression as a list of valid tokens
 
-        # Validate length and first/last character
-        self.validate_length(user_expression)
+        # Validate first and last character
         self.validate_first_character(user_expression)
         self.validate_last_character(user_expression)
 
         #Tokenise the expression
         valid_tokens = self.tokenise_expression(user_expression)
+
+        self.validate_length(user_expression)
 
         # w_tokens = self.validate_used_variables(w)
         # x_tokens = self.check_operator_validity(x)

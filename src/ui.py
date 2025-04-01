@@ -7,7 +7,9 @@ User interface for the calculator.
 
 # Intialise an empty dictionary for the user's variables
 USER_VARS = {}
-USER_VARS["A"] = -4.5
+USER_VARS["A"] = "-4.5"
+USER_VARS["B"] = "pi*3"
+
 
 def print_intro():
     print("***************************************************************\n")
@@ -111,10 +113,10 @@ def main():
                         val_input = input(f"\nGive value for {var_input}: ")
                         
                         try: # Set variable if it is an int or float number, else give error
-                            valid_value = validator.validate_var_value(val_input)
-                            USER_VARS.update({var_input: valid_value})
+                            #valid_value = validator.validate_var_value(val_input)
+                            USER_VARS.update({var_input: val_input})
                             validator.update_user_vars(USER_VARS)
-                            print(f"\nVariable {var_input} = {valid_value} set!")
+                            print(f"\nVariable {var_input} = {val_input} set!")
                             break
                         except ValueError:
                             print("\nInvalid input. Please enter a number (e.g. '1.45')")
