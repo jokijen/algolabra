@@ -1,11 +1,10 @@
-import math
+"""Checks validity of the user's input string. The string is either considered
+valid and returned tokenised (list) or an error is triggered
+"""
 import re
 import string
 from .exceptions import InvalidExpressionException
-"""
-Checks validity of the user's input. Either accepts it and returns an optimal
-form of the expression or gives an error
-"""
+
 
 class InputValidator():
     """The class is used to validate the mathematical expression provided by
@@ -41,14 +40,15 @@ class InputValidator():
 
     def validate_var_character(self, char_input: str) -> bool:
         # Checks if user provided character is a single uppercase letter A-Z and returns True/False
-        if len(char_input) == 1: 
+        if len(char_input) == 1:
             if char_input in string.ascii_uppercase:
                 return True
 
         return False
 
 
-    """def validate_var_value(self, val_input: str):
+    # Not used atm
+    def validate_var_value(self, val_input: str):
         # Takes user provided number value of type str as input and returns it as int or float if valid
         valid_value = float(val_input)
 
@@ -56,7 +56,6 @@ class InputValidator():
             valid_value = int(valid_value)
 
         return valid_value
-    """
 
 
     def validate_length(self, user_expression:str):
@@ -87,13 +86,13 @@ class InputValidator():
         if len(user_expression) != len(comparison_list):
             raise InvalidExpressionException("The expression contains invalid characters!")
 
-
+    # Unused arg: tokens
     def validate_used_variables(self, used_variables:set, tokens:list):
         for var in used_variables:
             if not var in self.user_variables:
                 raise InvalidExpressionException("The expression contains an undefined variable!")
 
-
+    # Unused arg: used_variables
     def tokenise_variables(self, used_variables:set, tokens:list):
         expanded_tokens = []
 
@@ -104,8 +103,8 @@ class InputValidator():
                 expanded_tokens.extend(tokenised_var)
             else:
                 expanded_tokens.append(token)
-        
-        print(expanded_tokens)
+
+        # print(expanded_tokens)
         return expanded_tokens
 
 
@@ -131,9 +130,9 @@ class InputValidator():
         tokens = pattern.findall(user_expression)
 
         token_list = [token for group in tokens for token in group if token]
-        
+
         self.check_for_invalid_characters(user_expression, token_list)
-        
+
         # If only tokenising a user variable
         if not full_expression:
             return token_list

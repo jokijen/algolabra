@@ -1,9 +1,8 @@
-import sys
+"""User interface for the calculator.
+"""
 from core.input_validator import InputValidator
 from core.exceptions import InvalidExpressionException
-"""
-User interface for the calculator.
-"""
+
 
 # Intialise an empty dictionary for the user's variables
 USER_VARS = {}
@@ -28,7 +27,8 @@ def print_instructions():
     print("* Numbers 0-9 (integer or floating point using the dot '.' as the decimal separator)")
     print("* Constants: 'pi'")
     print("* Operators: plus '+', minus '-', muliplication '*', division '/', exponent '**'")
-    print("* Functions: square root 'sqrt(x)', sine 'sin(x)', cosine 'cos(x)', minimum 'min(x, y)', maximum 'max(x, y)'")
+    print("* One argument functions: square root 'sqrt(x)', sine 'sin(x)', cosine 'cos(x)'")
+    print("* Two argument functions: minimum 'min(x, y)', maximum 'max(x, y)'")
     print("* Other characters: brackets '(', ')', and comma ',' for max and min e.g. 'min(1, 9)'")
     print("\nYou can also use capital letters as variables and define them to have custom values")
 
@@ -36,7 +36,7 @@ def print_instructions():
 def print_commands():
     print("Commands:")
     print("1: Get a solution for an expression")
-    print("2: Define a variable")
+    print("2: Set a variable")
     print("3: List all defined variables")
     print("q: Quit SciCalc\n")
 
@@ -53,7 +53,7 @@ def print_expression_help():
     print("'3 * 4 + -5.67 / ( sin(9) + 2 ) * min(-5, -2.3)'")
 
 
-def main():
+def main(): # pylint: disable=too-many-statements
     validator = InputValidator(USER_VARS)
     # sy = ShuntingYard()
     # rpn_evaluator = RPNEvaluator
@@ -71,23 +71,24 @@ def main():
             print("\n*** Quitting the program. Bye! ***\n")
             break
 
-        elif user_input == "1":
+        if user_input == "1":
             while True:
-                expression_input = input("\nGive a mathematical expression to evaluate ('h' instructions, 'q' cancel):\n>>> ")
+                print("\nGive a mathematical expression to evaluate ('h' help, 'c' cancel):")
+                expression_input = input(">>> ")
                 print("")
 
-                if expression_input == "q": 
+                if expression_input == "c":
                     break
 
-                elif expression_input == "h":
+                if expression_input == "h":
                     print_expression_help()
 
                 else:
                     try:
                         # TESTING: Valid:
-                        # expression_input = "45.78- -56.7**sin(D)/sqrt(-9)+-max(3.5,-70)*pi*-6" #For testing
+                        # expression_input = "45.78- -56.7**sin(D)/sqrt(-9)+-max(3.5,-70)*pi*-6"
                         # Invalid:
-                        # expression_input = "45.78- -56.7**sin(D)/sqrt(-9)+-max(3.5,-70)*pi*abc--6" #For testing
+                        # expression_input = "45.78- -56.7**sin(D)/sqrt(-9)+-max(3.5,-70)*pi*abc--6"
 
                         validated_expression = validator.validate_expression(expression_input)
                         # rpn_expression = sy.generate_RPN(validated_expression)
@@ -98,12 +99,13 @@ def main():
 
                     except InvalidExpressionException as e:
                         print(f"InvalidExpressionException: {e}")
-        
-        elif user_input == "2": # User defines a variable
-            while True:
-                var_input = input("\nWhich variable A-Z would you like to define? (e.g. 'A', or 'q' to cancel):\n>>> ")
 
-                if var_input == "q":
+        if user_input == "2": # User defines a variable
+            while True:
+                print("\nWhich variable A-Z would you like to set? (e.g. 'A', or 'c' to cancel):")
+                var_input = input(">>> ")
+
+                if var_input == "c":
                     break
 
                 # Ensure that user gave an uppercase letter
@@ -111,7 +113,7 @@ def main():
 
                     while True:
                         val_input = input(f"\nGive value for {var_input}: ")
-                        
+
                         try: # Set variable if it is an int or float number, else give error
                             #valid_value = validator.validate_var_value(val_input)
                             USER_VARS.update({var_input: val_input})
@@ -121,18 +123,18 @@ def main():
                         except ValueError:
                             print("\nInvalid input. Please enter a number (e.g. '1.45')")
                     break
-                else:
-                    print("\nThat is not a valid variable. Please try again.")
+
+                print("\nThat is not a valid variable. Please try again.")
 
 
-        elif user_input == "3":
+        if user_input == "3":
             print("\nDefined variables:\n")
-            if not USER_VARS: 
+            if not USER_VARS:
                 print("You have no defined variables\n")
                 continue
             for key, value in USER_VARS.items():
                 print(f"{key} = {value}")
-        
+
         else:
             print("\nNice try! That is not a valid command. Try again.")
 
