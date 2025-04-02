@@ -26,11 +26,11 @@ def print_instructions():
     print("\nAllowed inputs:")
     print("* Numbers 0-9 (integer or floating point using the dot '.' as the decimal separator)")
     print("* Constants: 'pi'")
-    print("* Operators: plus '+', minus '-', muliplication '*', division '/', exponent '**'")
+    print("* Operators: plus '+', minus '-', multiplication '*', division '/', exponent '**'")
     print("* One argument functions: square root 'sqrt(x)', sine 'sin(x)', cosine 'cos(x)'")
     print("* Two argument functions: minimum 'min(x, y)', maximum 'max(x, y)'")
     print("* Other characters: brackets '(', ')', and comma ',' for max and min e.g. 'min(1, 9)'")
-    print("\nYou can also use capital letters as variables and define them to have custom values")
+    print("\nYou can also use capital letters A-Z as variables and set values for them")
 
 
 def print_commands():
@@ -45,7 +45,8 @@ def print_expression_help():
     print_instructions()
     print("\nExpressions should be written with care in proper infix notation.")
     print("Minimum length: 3 characters")
-    print("Use a period '.' as a decimal separator, and ensure brackets are correctly paired.")
+    print("Use a period '.' as a decimal separator.")
+    print("Ensure brackets are correctly paired.")
     print("Be explicit with multiplication, e.g. use '3*A' instead of '3A")
     print("\nExample expressions:")
     print("'-2**2*-5.7'")
