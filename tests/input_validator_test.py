@@ -12,11 +12,11 @@ class TestInputValidator(unittest.TestCase):
         self.assertEqual(self.validator.user_variables, self.user_variables)
     
     def test_validate_var_value_decimal(self):
-        result = InputValidator.validate_var_value("4.5")
+        result = self.validator.validate_var_value("4.5")
         self.assertEqual(result, 4.5)
 
     def test_validate_var_value_negative_integer(self):
-        result = InputValidator.validate_var_value("-3")
+        result = self.validator.validate_var_value("-3")
         self.assertEqual(result, -3)
     
     def test_validate_length_does_not_accept_too_short_input(self):
