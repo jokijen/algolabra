@@ -27,4 +27,6 @@ q: Quit SciCalc
 
 ## Run tests
 
-...
+After setting up the application using the above instructions, you can run tests with: 
+
+$ poetry pytest
