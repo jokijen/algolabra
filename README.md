@@ -11,7 +11,7 @@ The project is an implementation of a scientific calculator that takes a mathema
 
 ## Links
 
-[Implementation](./documents/IMPLEMENTATION.md)
-[Usage](./documents/USAGE.md)
-[Requirements](./documents/REQUIREMENTS.md)
-[Testing](./documents/TESTING.md)
+- [Implementation](./documents/IMPLEMENTATION.md)
+- [Usage](./documents/USAGE.md)
+- [Requirements](./documents/REQUIREMENTS.md)
+- [Testing](./documents/TESTING.md)

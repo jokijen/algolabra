@@ -28,9 +28,9 @@ Integration testing will be implemented to ensure interactions between different
 
 A continuous integration (CI) workflow for testing is implemented with GitHub Actions (GHA). The workflow tasks are defined in test.yml. First steps perform the build, after which the tests are run, a coverage report is generated, and the report is uploaded to Codecov.
 
-The coverage report can be found on [Codecov]( https://app.codecov.io/gh/jokijen/algolabra).
+The coverage report can be found on [Codecov](https://app.codecov.io/gh/jokijen/algolabra).
 
 
 ## Running the tests
 
-Instructions for running the tests can be found in the document [USAGE.md]( ./documents/USAGE.md).
+Instructions for running the tests can be found in the document [USAGE.md](./documents/USAGE.md)
