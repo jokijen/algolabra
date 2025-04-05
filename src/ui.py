@@ -8,6 +8,7 @@ from core.exceptions import InvalidExpressionException
 USER_VARS = {}
 USER_VARS["A"] = "-4.5"
 USER_VARS["B"] = "pi*3"
+USER_VARS["C"] = "A+123"
 
 
 def print_intro():
@@ -34,7 +35,7 @@ def print_instructions():
 
 
 def print_commands():
-    print("Commands:")
+    print("\nCommands:\n")
     print("1: Get a solution for an expression")
     print("2: Set a variable")
     print("3: List all defined variables")
@@ -44,7 +45,7 @@ def print_commands():
 def print_expression_help():
     print_instructions()
     print("\nExpressions should be written with care in proper infix notation.")
-    print("Minimum length: 3 characters")
+    print("Minimum length: 1 character")
     print("Use a period '.' as a decimal separator.")
     print("Ensure brackets are correctly paired.")
     print("Be explicit with multiplication, e.g. use '3*A' instead of '3A")
@@ -97,11 +98,12 @@ def main(): # pylint: disable=too-many-statements
 
                         # print(result)
                         print(validated_expression)
+                        # break
 
                     except InvalidExpressionException as e:
                         print(f"InvalidExpressionException: {e}")
 
-        if user_input == "2": # User defines a variable
+        elif user_input == "2": # User defines a variable
             while True:
                 print("\nWhich variable A-Z would you like to set? (e.g. 'A', or 'c' to cancel):")
                 var_input = input(">>> ")
@@ -109,26 +111,25 @@ def main(): # pylint: disable=too-many-statements
                 if var_input == "c":
                     break
 
-                # Ensure that user gave an uppercase letter
+                # If the user gave a valid uppercase letter
                 if validator.validate_var_character(var_input):
 
                     while True:
                         val_input = input(f"\nGive value for {var_input}: ")
 
-                        try: # Set variable if it is an int or float number, else give error
-                            #valid_value = validator.validate_var_value(val_input)
+                        try: # Set variable or give an error
                             USER_VARS.update({var_input: val_input})
                             validator.update_user_vars(USER_VARS)
                             print(f"\nVariable {var_input} = {val_input} set!")
                             break
                         except ValueError:
-                            print("\nInvalid input. Please enter a number (e.g. '1.45')")
+                            print("\nInvalid input.")
                     break
 
                 print("\nThat is not a valid variable. Please try again.")
 
 
-        if user_input == "3":
+        elif user_input == "3":
             print("\nDefined variables:\n")
             if not USER_VARS:
                 print("You have no defined variables\n")
