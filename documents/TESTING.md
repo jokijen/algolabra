@@ -33,4 +33,4 @@ The coverage report can be found on [Codecov](https://app.codecov.io/gh/jokijen/
 
 ## Running the tests
 
-Instructions for running the tests can be found in the document [USAGE.md](./documents/USAGE.md)
+Instructions for running the tests can be found in the document [USAGE.md](./USAGE.md)
