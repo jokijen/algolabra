@@ -13,10 +13,11 @@ class InputValidator:
 
     Methods:
     * update_user_vars: Updates the user variables of the object (arg: up-to-date variable dict)
-    * validate_var_character: Validates that the str the user is trying to set is a capital letter A-Z
+    * validate_var_character: Validates that the str to be set is a capital letter A-Z
     * is_number: Checks if a str input can be converted into a float
-    * validate_length: Validates lenght of the str input given by user and returns error if empty str
-    * validate_first_and_last: Returns an error if first/last character is not avalid start/end character 
+    * validate_length: Validates length of the str input, returns error if empty str
+    * validate_first_and_last: Returns an error if first/last character is not a valid start/
+      end character 
     * check_for_invalid_characters:
     * tokenise_expression:
     * validate_expression:
@@ -25,11 +26,11 @@ class InputValidator:
     def __init__(self, user_variables: dict):
         self.user_variables = user_variables
         self.operators = set(["+", "-", "*", "/", "^", ])
-        self.functions = set(["cos", "sin", "sqrt", "min", "max"])
-        self.characters = set(["(", ")", "."])
+        #self.functions = set(["cos", "sin", "sqrt", "min", "max"])
+        #self.characters = set(["(", ")", "."])
         self.allowed_start_chars = set(["c", "s", "m", "-", "(", "."])
         self.allowed_end_chars = set([")", "."])
-        self.bracket_equality = 0
+        #self.bracket_equality = 0
 
 
     def update_user_vars(self, new_user_variables: dict):
@@ -53,27 +54,29 @@ class InputValidator:
             return False
 
 
-    def expand_variables(self, user_expression: str, seen=None) -> str:
+    def expand_variables(self, user_expression: str, recursion_depth=0) -> str:
         expanded_expression = ""
-        if seen is None:
-            seen = set()
+
+        if recursion_depth > 24:
+            raise InvalidExpressionException("Circular reference for variable!")
 
         for char in user_expression:
             if char in string.ascii_uppercase:
                 if not char in self.user_variables.keys():
                     raise InvalidExpressionException("The variable {char} has not been defined!")
-                if char in seen:
-                    raise InvalidExpressionException("Circular reference for variable!")
                 
-                seen.add(char)
                 var_value = self.user_variables[char]
+
                 if self.is_number(var_value):
-                    expanded_expression += var_value # expanded_var is a number and does not require brackets
+                    expanded_expression += var_value # a number value does not require brackets
                 else:
-                    expanded_var = self.expand_variables(var_value, seen) # Recursively checks if variable contains other variables
+                    # Recursively checks if variable contains other variables
+
+                    expanded_var = self.expand_variables(var_value, recursion_depth + 1)
                     expanded_expression += "(" + expanded_var + ")"
             else:
                 expanded_expression += char
+                
         return expanded_expression
 
 
@@ -143,7 +146,6 @@ class InputValidator:
         # Ensure there are no surplus characters that are not valid
         self.check_for_invalid_characters(expanded_expression, tokens)
 
-        
         # x_tokens = self.check_operator_validity(x)
         # y_tokens = self.check_brackets(y)
         # z_tokens = self.check_digits(z)
