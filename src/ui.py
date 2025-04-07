@@ -2,6 +2,7 @@
 """
 from core.input_validator import InputValidator
 from core.exceptions import InvalidExpressionException
+from core.shunting_yard import ShuntingYard
 
 
 # Intialise an empty dictionary for the user's variables
@@ -55,11 +56,12 @@ def print_expression_help():
     print("Spaces don't matter. Use them if you like them.")
     print("Use a period '.' as a decimal separator.")
     print("Ensure brackets are correctly paired.")
-    print("Be explicit with multiplication, e.g. use '3*A' instead of '3A")
+    print("Be explicit with negative numbers and enclose them in brackets, e.g. '(-3)'. not '-3")
+    print("Be explicit with multiplication, e.g. '3*A', not '3A")
     print("\nExample expressions:")
-    print("'-2**2*-5.7'")
-    print("'8.55 / max(sqrt(9), 4)+pi*3'")
-    print("'3 * 4 + -5.67 / ( sin(9) + 2 ) * min(-5, -2.3)'")
+    print("'(-2)**2*(-5.7)'")
+    print("'8.55 / max(sqrt(9), 4) + pi*3'")
+    print("'3 * 4 + (-5.67) / (sin(9) + 2) * min((-5), (-2.3))'")
 
 
 def main(): # pylint: disable=too-many-statements
@@ -80,6 +82,7 @@ def main(): # pylint: disable=too-many-statements
             print("\n*** Quitting the program. Bye! ***\n")
             break
 
+        # Solve a mathematical expression
         if user_input == "1":
             while True:
                 print("\nGive a mathematical expression to evaluate ('h' help, 'c' cancel):")
@@ -93,6 +96,7 @@ def main(): # pylint: disable=too-many-statements
                     print_expression_help()
 
                 else:
+                    print("Original expression:", expression_input)
                     try:
                         # TESTING: Valid:
                         # expression_input = "45.78- -56.7**sin(D)/sqrt(-9)+-max(3.5,-70)*pi*-6"
@@ -100,17 +104,19 @@ def main(): # pylint: disable=too-many-statements
                         # expression_input = "45.78- -56.7**sin(D)/sqrt(-9)+-max(3.5,-70)*pi*abc--6"
 
                         validated_expression = validator.validate_expression(expression_input)
-                        # rpn_expression = sy.generate_RPN(validated_expression)
-                        # result = rpn_evaluator(rpn_expression)
+                        print("Tokenised expression:", validated_expression)
 
-                        # print(result)
-                        print(validated_expression)
-                        # break
+                        # rpn_expression = sy.convert_to_rpn(validated_expression)
+                        # result = rpn_evaluator(rpn_expression)
+                        
+                        # print("Reverse Polish Notation (RPN):", rpn_expression)
+                        break
 
                     except InvalidExpressionException as e:
                         print(f"InvalidExpressionException: {e}")
 
-        elif user_input == "2": # User defines a variable
+        # Set a variable
+        elif user_input == "2":
             while True:
                 print("\nWhich variable A-Z would you like to set? (e.g. 'A', or 'c' to cancel):")
                 var_input = input(">>> ")
@@ -118,7 +124,7 @@ def main(): # pylint: disable=too-many-statements
                 if var_input == "c":
                     break
 
-                # If the user gave a valid uppercase letter
+                # The user gives a valid uppercase letter
                 if validator.validate_var_character(var_input):
                     if var_input in USER_VARS:
                         print("\nThe variable already has a value. ('c' cancel or anything else to continue)")
@@ -130,7 +136,7 @@ def main(): # pylint: disable=too-many-statements
                     while True:
                         val_input = input(f"\nGive value for {var_input}: ")
 
-                        try: # Set variable or give an error
+                        try:
                             USER_VARS.update({var_input: val_input})
                             validator.update_user_vars(USER_VARS)
                             print(f"\nVariable {var_input} = {val_input} set!")
@@ -141,7 +147,7 @@ def main(): # pylint: disable=too-many-statements
 
                 print("\nThat is not a valid variable. Please try again.")
 
-
+        # Print all defined variables and their values
         elif user_input == "3":
             print("\nDefined variables:\n")
             if not USER_VARS:
