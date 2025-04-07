@@ -10,11 +10,17 @@ USER_VARS["A"] = "-4.5"
 USER_VARS["B"] = "pi*3"
 USER_VARS["C"] = "A+123"
 
+USER_VARS["X"] = "Y"
+USER_VARS["Y"] = "Z"
+USER_VARS["Z"] = "X"
+
 
 def print_intro():
     print("***************************************************************\n")
     print("*** Welcome to SciCalc -- the simple scientific calculator! ***\n")
     print("***************************************************************\n")
+    print("SciCalc (in a nutshell):")
+    print("Give a mathematical expression and get the solution.")
 
 
 def print_separator():
@@ -22,16 +28,17 @@ def print_separator():
 
 
 def print_instructions():
-    print("How to use SciCalc (in a nutshell):")
-    print("Input a mathematical expression and hit enter to get the solution.")
-    print("\nAllowed inputs:")
-    print("* Numbers 0-9 (integer or floating point using the dot '.' as the decimal separator)")
+    print("\nAllowed inputs:\n")
+    print("* Numbers 0-9 (integer or floating point using the period '.' as the decimal separator)")
     print("* Constants: 'pi'")
     print("* Operators: plus '+', minus '-', multiplication '*', division '/', exponent '**'")
     print("* One argument functions: square root 'sqrt(x)', sine 'sin(x)', cosine 'cos(x)'")
     print("* Two argument functions: minimum 'min(x, y)', maximum 'max(x, y)'")
     print("* Other characters: brackets '(', ')', and comma ',' for max and min e.g. 'min(1, 9)'")
-    print("\nYou can also use capital letters A-Z as variables and set values for them")
+    print("\nYou can also use capital letters A-Z as variables and set values for them.")
+    print("The allowed inputs for variable values are the same as above, but the validity " \
+    "will only be checked when the variable is used in an expression.")
+    print("Nested variables are allowed, but make sure they don't form an infinite cycle.")
 
 
 def print_commands():
@@ -45,7 +52,7 @@ def print_commands():
 def print_expression_help():
     print_instructions()
     print("\nExpressions should be written with care in proper infix notation.")
-    print("Minimum length: 1 character")
+    print("Spaces don't matter. Use them if you like them.")
     print("Use a period '.' as a decimal separator.")
     print("Ensure brackets are correctly paired.")
     print("Be explicit with multiplication, e.g. use '3*A' instead of '3A")
@@ -62,7 +69,7 @@ def main(): # pylint: disable=too-many-statements
 
     print_intro()
     print_instructions()
-    print("\nWhat would you like to do next?\n")
+    print("\nWhat would you like to do next?")
 
     while True:
         print_commands()
@@ -113,6 +120,12 @@ def main(): # pylint: disable=too-many-statements
 
                 # If the user gave a valid uppercase letter
                 if validator.validate_var_character(var_input):
+                    if var_input in USER_VARS:
+                        print("\nThe variable already has a value. ('c' cancel or anything else to continue)")
+                        command = input(">>> ")
+
+                        if command == "c":
+                            continue
 
                     while True:
                         val_input = input(f"\nGive value for {var_input}: ")
