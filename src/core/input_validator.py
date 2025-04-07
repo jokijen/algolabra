@@ -30,7 +30,6 @@ class InputValidator:
         #self.characters = set(["(", ")", "."])
         self.allowed_start_chars = set(["c", "s", "m", "-", "(", "."])
         self.allowed_end_chars = set([")", "."])
-        #self.bracket_equality = 0
 
 
     def update_user_vars(self, new_user_variables: dict):
@@ -76,7 +75,7 @@ class InputValidator:
                     expanded_expression += "(" + expanded_var + ")"
             else:
                 expanded_expression += char
-                
+
         return expanded_expression
 
 
@@ -132,6 +131,15 @@ class InputValidator:
         return token_list
 
 
+    def bracket_value(self, token: str):
+        if token == "(":
+            return 1
+        elif token == ")":
+            return -1
+        else:
+            return 0
+
+
     def validate_expression(self, user_expression: str):
         """Takes mathematical expression as input
         Returns the expression as a list of valid tokens
@@ -146,8 +154,25 @@ class InputValidator:
         # Ensure there are no surplus characters that are not valid
         self.check_for_invalid_characters(expanded_expression, tokens)
 
+        validated_tokens = []
+        bracket_equality = 0
+
+        for token in tokens:
+            if token == " ":
+                continue
+
+            bracket_equality += self.bracket_value(token)
+            if bracket_equality < 0:
+                raise InvalidExpressionException("Closing bracket before an opening bracket!")
+
+            validated_tokens.append(token)
+
+        if bracket_equality != 0:
+            raise InvalidExpressionException("Unequal brackets!")
+
+
         # x_tokens = self.check_operator_validity(x)
         # y_tokens = self.check_brackets(y)
         # z_tokens = self.check_digits(z)
 
-        return tokens
+        return validated_tokens
