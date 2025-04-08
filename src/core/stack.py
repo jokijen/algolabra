@@ -10,3 +10,11 @@ class Stack:
 
     def dequeue(self):
         return self._tokens.pop()
+
+    def peek(self):
+        if self._tokens:
+            return self._tokens[-1]
+        return None
+
+    def is_empty(self):
+        return len(self._tokens) == 0
