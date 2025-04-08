@@ -27,7 +27,7 @@ class ShuntingYard:
                            "sin": 4}
 
 
-    def convert_to_rpn(self, tokens):
+    def convert_to_rpn(self, tokens: list) -> Queue:
         operator_stack = Stack()
         output_queue = Queue()
 
@@ -56,15 +56,14 @@ class ShuntingYard:
                     prev_in_stack = operator_stack.peek()
 
                     # Stack is empty or has a lower precedence top token -> add token to stack
-                    if prev_in_stack == None or self.precedence[token] > self.precedence[prev_in_stack]:
+                    if prev_in_stack is None or self.precedence[token] > self.precedence[prev_in_stack]:
                         operator_stack.enqueue(token)
                         break
 
                     # Item on top of the stack has a higher precedence, you cannot add token to stack
                     # before popping off all the items with higher or same precedence
-                    else:
-                        popped_token = operator_stack.dequeue()
-                        output_queue.enqueue(popped_token)
+                    popped_token = operator_stack.dequeue()
+                    output_queue.enqueue(popped_token)
                 else:
                     operator_stack.enqueue(token)
 
