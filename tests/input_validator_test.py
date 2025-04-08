@@ -10,7 +10,7 @@ class TestInputValidator(unittest.TestCase):
             "B": "sqrt(9)*20",
             "C": "1+D",
             "D": "C+1",
-            "Z": "-8"
+            "Z": "(-8)"
             }
         self.validator = InputValidator(self.user_variables)
 
@@ -18,7 +18,7 @@ class TestInputValidator(unittest.TestCase):
         self.assertEqual(self.validator.user_variables, self.user_variables)
 
     def test_update_user_vars_updates_user_vars(self):
-        new_variables = {"A": "1.45", "Z": "-8"}
+        new_variables = {"A": "45", "Y": "pi*3"}
         self.validator.update_user_vars(new_variables)
         self.assertEqual(new_variables, self.validator.user_variables)
 
@@ -103,7 +103,7 @@ class TestInputValidator(unittest.TestCase):
         except InvalidExpressionException:
             self.fail("validate_first_and_last raised an unnecessary exception")
 
-    def test_check_for_invalid_characters_fails_when_exp_not_matches_tokenised_exp(self):
+    def test_check_for_invalid_characters_fails_when_exp_and_tokens_do_not_match(self):
         user_expression = "5.65*pi+sqrt(-9)**sin(4)"
         tokens = ['5.65', '*', 'pi', '+', 'sqrt', '(', '-', '9', ')', '**', 'sin', '(', '4']
         with self.assertRaises(InvalidExpressionException):
@@ -130,7 +130,7 @@ class TestInputValidator(unittest.TestCase):
 
     def test_validate_expression_accepts_valid_expression(self):
         user_expression = "(-3)*A**2.5"
-        tokenised = ['(', '-3', ')', '*', '(', '1.45', ')', '**', '2.5']
+        tokenised = ['(', -3.0, ')', '*', '(', 1.45, ')', '**', 2.5]
         result = self.validator.validate_expression(user_expression)
         self.assertEqual(result, tokenised)
 
@@ -139,3 +139,7 @@ class TestInputValidator(unittest.TestCase):
         with self.assertRaises(InvalidExpressionException):
             self.validator.validate_expression(user_expression)
 
+    def test_validate_expression_does_not_accept_consecutive_operators(self):
+        user_expression = "(-3)***2.5"
+        with self.assertRaises(InvalidExpressionException):
+            self.validator.validate_expression(user_expression)

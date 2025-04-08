@@ -32,7 +32,7 @@ def print_instructions():
     print("\nAllowed inputs:\n")
     print("* Numbers 0-9 (integer or floating point using the period '.' as the decimal separator)")
     print("* Constants: 'pi'")
-    print("* Operators: plus '+', minus '-', multiplication '*', division '/', exponent '**'")
+    print("* Operators: plus '+', minus '-', multiplication '*', division '/', exponentiation '**'")
     print("* One argument functions: square root 'sqrt(x)', sine 'sin(x)', cosine 'cos(x)'")
     print("* Two argument functions: minimum 'min(x, y)', maximum 'max(x, y)'")
     print("* Other characters: brackets '(', ')', and comma ',' for max and min e.g. 'min(1, 9)'")
@@ -53,20 +53,28 @@ def print_commands():
 def print_expression_help():
     print_instructions()
     print("\nExpressions should be written with care in proper infix notation.")
-    print("Spaces don't matter. Use them if you like them.")
-    print("Use a period '.' as a decimal separator.")
+    print("Spaces are not necessary, but can  be used between operators, operands and functions.")
+    print("Use a period '.' as a decimal separator, not a comma ','.")
     print("Ensure brackets are correctly paired.")
     print("Be explicit with negative numbers and enclose them in brackets, e.g. '(-3)'. not '-3")
     print("Be explicit with multiplication, e.g. '3*A', not '3A")
     print("\nExample expressions:")
-    print("'(-2)**2*(-5.7)'")
-    print("'8.55 / max(sqrt(9), 4) + pi*3'")
-    print("'3 * 4 + (-5.67) / (sin(9) + 2) * min((-5), (-2.3))'")
+    print("Valid: '(-2)**2*(-5.7)'")
+    print("Valid: '8.55 / max(sqrt(9), 4) + pi*3'")
+    print("Valid: '3 * 4 + (-5.67) / (sin(9) + 2) * min((-5), (-2.3))'")
+    print("\nNot valid: '(- 2)**a*(-5.7)' (space after unary negative; invalid character)")
+    print("              ^    ^")
+    print("Not valid: '8,5/(max(sqrt(9), -4)+pi' (comma instead of period; " \
+    "negative number not in brackets)")
+    print("             ^                ^")
+    print("Not valid: '3 / 3A + 2) / 0' (inexplicit multiplication; division with zero)")
+    print("                 ^        ^")
+
 
 
 def main(): # pylint: disable=too-many-statements
     validator = InputValidator(USER_VARS)
-    # sy = ShuntingYard()
+    sy = ShuntingYard()
     # rpn_evaluator = RPNEvaluator
 
     print_intro()
@@ -97,23 +105,36 @@ def main(): # pylint: disable=too-many-statements
 
                 else:
                     print("Original expression:", expression_input)
+
                     try:
                         # TESTING: Valid:
-                        # expression_input = "45.78- -56.7**sin(D)/sqrt(-9)+-max(3.5,-70)*pi*-6"
+                        # expression_input = "45.78- (-56.7)**sin(C)/sqrt(-9)+-(max(3.5,-70))*pi"
                         # Invalid:
-                        # expression_input = "45.78- -56.7**sin(D)/sqrt(-9)+-max(3.5,-70)*pi*abc--6"
+                        # expression_input = "45.78- -56.7**sin(C)/sqrt(-9)+-max(3.5,-70)*pi*abc--6"
 
                         validated_expression = validator.validate_expression(expression_input)
-                        print("Tokenised expression:", validated_expression)
-
-                        # rpn_expression = sy.convert_to_rpn(validated_expression)
-                        # result = rpn_evaluator(rpn_expression)
-                        
-                        # print("Reverse Polish Notation (RPN):", rpn_expression)
-                        break
+                        print("\nValidated tokens:", validated_expression)
 
                     except InvalidExpressionException as e:
-                        print(f"InvalidExpressionException: {e}")
+                        print(f"Validation error: {e}")
+                        continue
+
+                    try:
+                        rpn_expression = sy.convert_to_rpn(validated_expression)
+                        print("\nReverse Polish Notation (RPN):", rpn_expression)
+
+                    except InvalidExpressionException as e:
+                        print(f"Error when converting to RPN: {e}")
+                        continue
+
+                    try:
+                        # result = rpn_evaluator(rpn_expression)
+                        pass
+
+                    except InvalidExpressionException as e:
+                        print(f"Error when converting to RPN: {e}")
+                        continue
+
 
         # Set a variable
         elif user_input == "2":
@@ -127,7 +148,8 @@ def main(): # pylint: disable=too-many-statements
                 # The user gives a valid uppercase letter
                 if validator.validate_var_character(var_input):
                     if var_input in USER_VARS:
-                        print("\nThe variable already has a value. ('c' cancel or anything else to continue)")
+                        print("\nThe variable already has a value. "
+                        "('c' cancel or anything else to continue)")
                         command = input(">>> ")
 
                         if command == "c":
