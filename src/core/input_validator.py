@@ -111,7 +111,7 @@ class InputValidator:
             raise InvalidExpressionException("The expression contains invalid characters!")
 
 
-    def tokenise_expression(self, user_expression: str):
+    def tokenise_expression(self, user_expression: str) -> list:
         """Takes a mathematical expression and uses regex to identify allowed characters/patterns
         in it, which is used to tokenise the founc elements.
                 
@@ -142,7 +142,7 @@ class InputValidator:
         return token_list
 
 
-    def get_bracket_value(self, token: str):
+    def get_bracket_value(self, token: str) -> int:
         if token == "(":
             return 1
         if token == ")":
@@ -150,7 +150,7 @@ class InputValidator:
         return 0
 
 
-    def validate_expression(self, user_expression: str):
+    def validate_expression(self, user_expression: str) -> list:
         """Takes mathematical expression as input
         Returns the expression as a list of valid tokens
         """
