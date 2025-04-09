@@ -7,17 +7,23 @@ from .exceptions import InvalidExpressionException
 
 
 class ShuntingYard:
-    """The class is used to convert a tokenised expression into RPN form using the
-    Shunting-Yard algorithm.
+    """The class implements the Shunting-Yard algorithm and converts infix expressions into RPN/postfix.
+
+    Attributes:
+        operators (set): A set containing the allowed operators for the calculations
+        functions (set): A set containing the allowed functions for the calculations
+        precedence (dict): A dict containing the precedence of the operators and functions 
+
+    Methods:
+        convert_to_rpn(tokens): Converts a list of tokens that form an infix expression into RPN/postfix
     """
     def __init__(self):
-        self.operators = set(["+", "-", "n", "*", "/", "**"])
-        self.functions = set(["cos", "sin", "sqrt", "min", "max"])
-        # self.characters = set(["(", ")", "."])
+        self.operators = set(["+", "-", "*", "/", "**"])
+        self.functions = set(["n", "cos", "sin", "sqrt", "min", "max"]) # 'n' is unary negation
         self.precedence = {"+": 1,
                            "-": 1,
-                           "max": 1,
-                           "min": 1,
+                           "max": 3,
+                           "min": 3,
                            "n": 1,
                            "*": 2,
                            "/": 2,
@@ -27,7 +33,14 @@ class ShuntingYard:
                            "sin": 4}
 
 
-    def convert_to_rpn(self, tokens: list) -> Queue:
+    def convert_to_rpn(self, tokens: list) -> Queue: # pylint: disable=too-many-statements
+        """Converts an infix mathematical expression to RPN/postfix.
+        
+        Args:
+            tokens -- tokens that form an infix mathematical expression
+        
+        Returns: Queue object that contains the mathematical expression in PRN/postfix
+        """
         operator_stack = Stack()
         output_queue = Queue()
 
@@ -62,13 +75,13 @@ class ShuntingYard:
                         operator_stack.enqueue(token)
                         break
 
-                    # Stack top token has a lower precedence -> add token to stack
+                    # Stack's top token has a lower precedence -> add token to stack
                     if self.precedence[token] > self.precedence[prev_in_stack]:
                         operator_stack.enqueue(token)
                         break
 
-                    # Item on top of the stack has a higher precedence, you cannot add token to stack
-                    # before popping off all the items with higher or same precedence
+                    # Stack's top token has a higher or same precedence -> pop all the items with
+                    # higher/same precedence and add them to the output queue
                     popped_token = operator_stack.dequeue()
                     output_queue.enqueue(popped_token)
                 else:

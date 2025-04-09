@@ -18,6 +18,6 @@ class Stack:
 
     def is_empty(self):
         return len(self._tokens) == 0
-    
+
     def get_size(self):
         return len(self._tokens)
