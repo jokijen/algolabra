@@ -1,8 +1,9 @@
 """User interface for the calculator.
 """
-from core.input_validator import InputValidator
 from core.exceptions import InvalidExpressionException
+from core.input_validator import InputValidator
 from core.shunting_yard import ShuntingYard
+from core.rpn_evaluator import RPNEvaluator
 
 
 # Intialise an empty dictionary for the user's variables
@@ -75,7 +76,7 @@ def print_expression_help():
 def main(): # pylint: disable=too-many-statements
     validator = InputValidator(USER_VARS)
     sy = ShuntingYard()
-    # rpn_evaluator = RPNEvaluator
+    rpn_evaluator = RPNEvaluator()
 
     print_intro()
     print_instructions()
@@ -105,6 +106,7 @@ def main(): # pylint: disable=too-many-statements
 
                 else:
                     print("Original expression:", expression_input)
+                    print("")
 
                     try:
                         # TESTING: Valid:
@@ -128,11 +130,12 @@ def main(): # pylint: disable=too-many-statements
                         continue
 
                     try:
-                        # result = rpn_evaluator(rpn_expression)
-                        pass
+                        end_result = rpn_evaluator.evaluate_rpn_expression(rpn_expression)
+                        print("\nFinal result:", end_result)
+                        continue
 
                     except InvalidExpressionException as e:
-                        print(f"Error when converting to RPN: {e}")
+                        print(f"Error when evaluating the RPN expression: {e}")
                         continue
 
 
