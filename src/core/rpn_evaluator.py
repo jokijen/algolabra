@@ -1,16 +1,11 @@
-"""
-Performs the mathematical calculations for an expression in postfix notation. 
-Returns the solution or an error message.
-"""
 import math
 from .stack import Stack
 from .queue import Queue
 from .exceptions import InvalidExpressionException
 
-
 class RPNEvaluator:
-    """The class implements an evaluator for RPN/postfix mathematical expressions and returns
-    the end result of the calculation.
+    """The class implements an evaluator for an RPN/postfix mathematical expression and returns
+    the end result for the calculation.
 
     Attributes:
         operators (set): A set containing the allowed operators for the calculations
@@ -18,7 +13,7 @@ class RPNEvaluator:
         two_arg_functions (set): A set containing the allowed two-argument functions for the calculations
 
     Methods:
-        evaluate_rpn_expression (tokens): Converts tokens (Queue object) that form an infix expression into RPN/postfix
+        evaluate_rpn_expression (tokens): Converts tokens (Queue object) forming an infix expression into RPN/postfix
         apply_operator (function, operand1, operand2):
         apply_one_arg_function (function, operand):
         apply_two_arg_function (function, operand1, operand2):
@@ -28,9 +23,9 @@ class RPNEvaluator:
         self.one_arg_functions = set(["n", "cos", "sin", "sqrt"]) # 'n' is unary negation
         self.two_arg_functions = set(["min", "max"])
 
-    def evaluate_rpn_expression(self, tokens: Queue):
+    def evaluate_rpn_expression(self, tokens: Queue): # pylint: disable=too-many-statements
         """Evaluates an RPN/postfix expression (token by token) and returns the end result of the calculation.
-        Uses an evaluation stack to handle the tokens. The last item left in the stack will be the result.
+        Uses an evaluation stack to handle the tokens. The last item left in the stack will be the end result.
 
         Args:
             tokens -- tokens that form an RPN/postfix mathematical expression
@@ -56,7 +51,7 @@ class RPNEvaluator:
                 operand1 = evaluation_stack.dequeue()
 
                 try:
-                    result = self.apply_operator(token, operand1, operand2)
+                    result = self._apply_operator(token, operand1, operand2)
                     evaluation_stack.enqueue(result)
                 except OverflowError as e:
                     raise InvalidExpressionException(
@@ -70,7 +65,7 @@ class RPNEvaluator:
                 operand1 = evaluation_stack.dequeue()
 
                 try:
-                    result = self.apply_one_arg_function(token, operand1)
+                    result = self._apply_one_arg_function(token, operand1)
                     evaluation_stack.enqueue(result)
                 except OverflowError as e:
                     raise InvalidExpressionException(
@@ -84,7 +79,7 @@ class RPNEvaluator:
                 operand1 = evaluation_stack.dequeue()
 
                 try:
-                    result = self.apply_two_arg_function(token, operand1, operand2)
+                    result = self._apply_two_arg_function(token, operand1, operand2)
                     evaluation_stack.enqueue(result)
                 except OverflowError as e:
                     raise InvalidExpressionException(
@@ -99,7 +94,7 @@ class RPNEvaluator:
 
         return evaluation_stack.peek()
 
-    def apply_operator(self, operator: str, operand1: float, operand2: float):
+    def _apply_operator(self, operator: str, operand1: float, operand2: float):
         """Apply an operator on two operands (i.e. numbers).
         
         Args:
@@ -121,7 +116,7 @@ class RPNEvaluator:
             case "**":
                 return operand1 ** operand2
 
-    def apply_one_arg_function(self, function: str, operand: float):
+    def _apply_one_arg_function(self, function: str, operand: float):
         """Apply a function on an argument/operand (i.e. number). In the cases of cos and sin
         the operand is first converted to radians.
         
@@ -141,7 +136,7 @@ class RPNEvaluator:
             case "sqrt":
                 return math.sqrt(operand)
 
-    def apply_two_arg_function(self, function: str, operand1: float, operand2: float):
+    def _apply_two_arg_function(self, function: str, operand1: float, operand2: float):
         """Apply a function on two arguments/operands (i.e. numbers).
         
         Args:
