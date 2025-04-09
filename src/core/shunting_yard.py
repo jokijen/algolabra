@@ -7,9 +7,9 @@ from .exceptions import InvalidExpressionException
 
 
 class ShuntingYard:
-    """The class is used to convert the tokenised expression into RPN form
+    """The class is used to convert a tokenised expression into RPN form using the
+    Shunting-Yard algorithm.
     """
-
     def __init__(self):
         self.operators = set(["+", "-", "n", "*", "/", "**"])
         self.functions = set(["cos", "sin", "sqrt", "min", "max"])
@@ -31,6 +31,9 @@ class ShuntingYard:
         operator_stack = Stack()
         output_queue = Queue()
 
+        if not tokens:
+            raise InvalidExpressionException("No tokens to evaluate!")
+
         while tokens:
             token = tokens.pop(0)
 
@@ -43,10 +46,10 @@ class ShuntingYard:
                 continue
 
             if token == ")":
-                while operator_stack:
+                while not operator_stack.is_empty():
                     stack_top = operator_stack.dequeue()
 
-                    if stack_top != "(":
+                    if stack_top == "(":
                         break
                     output_queue.enqueue(stack_top)
                 continue
@@ -55,8 +58,12 @@ class ShuntingYard:
                 while not operator_stack.is_empty():
                     prev_in_stack = operator_stack.peek()
 
-                    # Stack is empty or has a lower precedence top token -> add token to stack
-                    if prev_in_stack is None or self.precedence[token] > self.precedence[prev_in_stack]:
+                    if prev_in_stack =="(":
+                        operator_stack.enqueue(token)
+                        break
+
+                    # Stack top token has a lower precedence -> add token to stack
+                    if self.precedence[token] > self.precedence[prev_in_stack]:
                         operator_stack.enqueue(token)
                         break
 
