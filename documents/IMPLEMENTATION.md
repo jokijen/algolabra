@@ -42,14 +42,28 @@ Linear time complexity O(n) is efficient in cases where it is necessary to seque
 
 ## Deficiencies and improvement ideas 
 
-Currently the program is incomplete.  
+Currently the program is incomplete. 
+
+### Bugs
+
+- min/max does not function correctly when the arguments are functions. I need to add extra brackets around both arguments in the InputValidator
+
+- sin and cos don't function correctly when the argument is in radians already (e.g. 'sin(pi)')
+
+
+### Future improvement
 
 The command-line interface is easy to use, but possibly a graphical user interface could be built with Tkinter. 
 
 
 ## Use of AI tools
 
-LLMs ChatGPT-4o (Open AI) and Le Chat (Mistral AI) have been used to query some programming best practices, help solve git issues, and perform translations.
+LLMs ChatGPT-4o (Open AI) and Le Chat (Mistral AI) have been used for the following purposes: 
+
+- Query programming best practices (especially regarding commenting)
+- Assist in solving git issues and understanding programming error notifications
+- Perform translations for docs I initially wrote in Finnish
+- Generate versatile (valid and invalid) test inputs for development purposes
 
 
 ## Sources
