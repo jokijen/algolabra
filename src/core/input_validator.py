@@ -6,7 +6,6 @@ import re
 import string
 from .exceptions import InvalidExpressionException
 
-
 class InputValidator:
     """The class is used to validate the mathematical expression provided by the user and return
     the expression as a valid, tokenised list where each component of the epression (e.g. digit,
@@ -19,43 +18,63 @@ class InputValidator:
         self.user_variables = user_variables
         self.constants = {"pi": math.pi}
         self.operators = set(["+", "-", "*", "/", "**"])
-        #self.functions = set(["cos", "sin", "sqrt", "min", "max"])
-        #self.characters = set(["(", ")", "."])
-        self.allowed_start_chars = set(["c", "p", "s", "m", "(", "."])
-        self.allowed_end_chars = set(["i", ")", "."])
+        self.allowed_start_chars = set(["c", "p", "s", "m", "(", ".", " "])
+        self.allowed_end_chars = set(["i", ")", ".", " "])
 
+    def update_user_vars(self, var_character: str, var_value: str):
+        """Updates the dictionary self.user_variables with new variable (key-value pair).
 
-    def update_user_vars(self, new_user_variables: dict):
-        self.user_variables = new_user_variables
-
+        Args: 
+        var_character -- a capital letter A-Z (key)
+        var_value -- any value string (value)
+        
+        Returns: Nothing, but raises and exception with failure
+        """
+        try:
+            self.user_variables.update({var_character: var_value})
+        except (TypeError, ValueError) as e:
+            raise InvalidExpressionException("Could not update variables.") from e
 
     def validate_var_character(self, char_input: str) -> bool:
-        # Checks if user provided character is a single uppercase letter A-Z and returns True/False
+        """Checks if user provided character is a single ASCII uppercase letter (i.e. A-Z) and
+        returns bool True/False
+
+        Args: 
+        char_input -- string input given by the user as variable to define
+        
+        Returns: True if character input is ASCII upprecase (bool), False otherwise
+        """
         if len(char_input) == 1:
             if char_input in string.ascii_uppercase:
                 return True
-
         return False
 
+    def is_number(self, str_input: str) -> bool:
+        """Checks if argument string contains a number e.g. '-3', '7.89'
 
-    def is_number(self, var_value: str) -> bool:
+        Args: 
+        str_input -- string input to check
+
+        Returns: True if str_input contains a valid number that can be converted into float,
+        False otherwise
+        """
         try:
-            float(var_value)
+            float(str_input)
             return True
         except ValueError:
             return False
 
-
     def expand_variables(self, user_expression: str, recursion_depth=0) -> str:
-        """Expands any variables used in the expression, and recursively expands any variables
-        used in the value of an inspected variable.
+        """Expands any variables used in the expression, and recursively expands any variables used
+        in the value of an inspected variable. Raises an exception if the recursion depth of 24 has
+        been exceeded indicating that the variables have been defined in a circular fashion.
 
         Args: 
         user_expression -- the mathematical expression to check for variables
         recursion_depth -- a counter used when limiting recursion depth and detecting circular
         references in the variables (default 0)
         
-        Returns: An expanded expression with no more variables to expand
+        Returns: An expanded expression with no more variables to expand or exception
         """
         expanded_expression = ""
 
@@ -77,13 +96,26 @@ class InputValidator:
 
         return expanded_expression
 
-
     def validate_length(self, user_expression: str):
+        """Ensures no empty strings will be accepted.
+
+        Args:
+        user_expression -- the mathematical expression to check
+
+        Returns: Nothing if input not an empty string, raises exception otherwise
+        """
         if len(user_expression) < 1:
             raise InvalidExpressionException("Empty expression!")
 
-
     def validate_first_and_last(self, user_expression: str):
+        """Validates the first and last characters in the expression by checking if they are numbers and
+        comparing them to the allowed start/end characters.
+        
+        Args: 
+        user_expression -- the original mathematical expression to compare
+        
+        Returns: Nothing if first and last characters are valid or raises an exception otherwise
+        """
         first_char = user_expression[0]
         last_char = user_expression[-1]
 
@@ -96,7 +128,6 @@ class InputValidator:
             if not last_char in self.user_variables:
                 if not last_char in self.allowed_end_chars:
                     raise InvalidExpressionException("Invalid last character!")
-
 
     def check_for_invalid_characters(self, user_expression: str, tokens: list):
         """Chacks for invalid characters by comparing the original expression string to a parsed
@@ -111,7 +142,6 @@ class InputValidator:
         string_from_tokens = "".join(tokens)
         if user_expression != string_from_tokens:
             raise InvalidExpressionException("The expression contains invalid characters!")
-
 
     def tokenise_expression(self, user_expression: str) -> list:
         """Takes a mathematical expression and uses regex to identify allowed characters/patterns
@@ -142,14 +172,20 @@ class InputValidator:
 
         return token_list
 
-
     def get_bracket_value(self, token: str) -> int:
+        """Takes a token as input, checks if it is a left or right bracket and returns an int:
+        1 for opening/left and -1 for closing/right barcket, or 0 if not a bracket.
+               
+        Args: 
+        token -- s token from the user's mathematical expression input
+        
+        Returns: An int value 1/-1/0 representing opening/closing/not bracket
+        """
         if token == "(":
             return 1
         if token == ")":
             return -1
         return 0
-
 
     def validate_tokens(self, tokens: list) -> list:
         """Takes the tokenised mathematical expression as input. Removes: spaces and commas.
@@ -230,7 +266,6 @@ class InputValidator:
             raise InvalidExpressionException("Not enough commas! Check the two argument functions")
 
         return validated_tokens
-
 
     def validate_expression(self, user_expression: str) -> list:
         """Takes the user's mathematical expression as input. Expands all variables used (and

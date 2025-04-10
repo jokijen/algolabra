@@ -1,10 +1,9 @@
-"""Converts a user input into RPN/postfix notation using the Shunting-Yard algorithm. 
-Returns the mathematical expression in RPN/postfix notation.
+"""The Shunting-Yard algoritm used to convert an infix format mathematical expression given by the
+user into RPN/postfix notation using a queue and a stack.
 """
 from .stack import Stack
 from .queue import Queue
 from .exceptions import InvalidExpressionException
-
 
 class ShuntingYard:
     """The class implements the Shunting-Yard algorithm and converts infix expressions into RPN/postfix.
@@ -31,7 +30,6 @@ class ShuntingYard:
                            "sqrt": 3,
                            "cos": 4,
                            "sin": 4}
-
 
     def convert_to_rpn(self, tokens: list) -> Queue: # pylint: disable=too-many-statements
         """Converts an infix mathematical expression to RPN/postfix.

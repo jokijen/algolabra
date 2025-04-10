@@ -2,7 +2,6 @@ import unittest
 from src.core.input_validator import InputValidator
 from src.core.exceptions import InvalidExpressionException
 
-
 class TestInputValidator(unittest.TestCase):
     def setUp(self):
         self.user_variables = {
@@ -18,9 +17,10 @@ class TestInputValidator(unittest.TestCase):
         self.assertEqual(self.validator.user_variables, self.user_variables)
 
     def test_update_user_vars_updates_user_vars(self):
-        new_variables = {"A": "45", "Y": "pi*3"}
-        self.validator.update_user_vars(new_variables)
-        self.assertEqual(new_variables, self.validator.user_variables)
+        new_var_char = "A"
+        new_var_input = "45"
+        self.validator.update_user_vars(new_var_char, new_var_input)
+        self.assertEqual("45", self.validator.user_variables["A"])
 
     def test_validate_var_character_accepts_valid_char(self):
         result = self.validator.validate_var_character("Z")

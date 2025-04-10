@@ -5,17 +5,8 @@ from core.input_validator import InputValidator
 from core.shunting_yard import ShuntingYard
 from core.rpn_evaluator import RPNEvaluator
 
-
 # Intialise an empty dictionary for the user's variables
 USER_VARS = {}
-USER_VARS["A"] = "-4.5"
-USER_VARS["B"] = "pi*3"
-USER_VARS["C"] = "A+123"
-
-USER_VARS["X"] = "Y"
-USER_VARS["Y"] = "Z"
-USER_VARS["Z"] = "X"
-
 
 def print_intro():
     print("***************************************************************\n")
@@ -24,10 +15,8 @@ def print_intro():
     print("SciCalc (in a nutshell):")
     print("Give a mathematical expression and get the solution.")
 
-
 def print_separator():
     print("\n" + "*" * 50)
-
 
 def print_instructions():
     print("\nAllowed inputs:\n")
@@ -42,14 +31,12 @@ def print_instructions():
     "will only be checked when the variable is used in an expression.")
     print("Nested variables are allowed, but make sure they don't form an infinite cycle.")
 
-
 def print_commands():
     print("\nCommands:\n")
     print("1: Get a solution for an expression")
     print("2: Set a variable")
     print("3: List all defined variables")
     print("q: Quit SciCalc\n")
-
 
 def print_expression_help():
     print_instructions()
@@ -70,8 +57,6 @@ def print_expression_help():
     print("             ^                ^")
     print("Not valid: '3 / 3A + 2) / 0' (inexplicit multiplication; division with zero)")
     print("                 ^        ^")
-
-
 
 def main(): # pylint: disable=too-many-statements
     validator = InputValidator(USER_VARS)
@@ -109,11 +94,6 @@ def main(): # pylint: disable=too-many-statements
                     print("")
 
                     try:
-                        # TESTING: Valid:
-                        # expression_input = "45.78- (-56.7)**sin(C)/sqrt(-9)+-(max(3.5,-70))*pi"
-                        # Invalid:
-                        # expression_input = "45.78- -56.7**sin(C)/sqrt(-9)+-max(3.5,-70)*pi*abc--6"
-
                         validated_expression = validator.validate_expression(expression_input)
                         print("\nValidated tokens:", validated_expression)
 
@@ -132,25 +112,26 @@ def main(): # pylint: disable=too-many-statements
                     try:
                         end_result = rpn_evaluator.evaluate_rpn_expression(rpn_expression)
                         print("\nFinal result:", end_result)
+                        print_separator()
+
                         continue
 
                     except InvalidExpressionException as e:
                         print(f"Error when evaluating the RPN expression: {e}")
                         continue
 
-
         # Set a variable
         elif user_input == "2":
             while True:
                 print("\nWhich variable A-Z would you like to set? (e.g. 'A', or 'c' to cancel):")
-                var_input = input(">>> ")
+                var_character = input(">>> ")
 
-                if var_input == "c":
+                if var_character == "c":
                     break
 
                 # The user gives a valid uppercase letter
-                if validator.validate_var_character(var_input):
-                    if var_input in USER_VARS:
+                if validator.validate_var_character(var_character):
+                    if var_character in USER_VARS:
                         print("\nThe variable already has a value. "
                         "('c' cancel or anything else to continue)")
                         command = input(">>> ")
@@ -159,15 +140,15 @@ def main(): # pylint: disable=too-many-statements
                             continue
 
                     while True:
-                        val_input = input(f"\nGive value for {var_input}: ")
+                        var_value = input(f"\nGive value for {var_character}: ")
 
                         try:
-                            USER_VARS.update({var_input: val_input})
-                            validator.update_user_vars(USER_VARS)
-                            print(f"\nVariable {var_input} = {val_input} set!")
+                            USER_VARS.update({var_character: var_value})
+                            validator.update_user_vars(var_character, var_value)
+                            print(f"\nVariable {var_character} = {var_value} set!")
                             break
-                        except ValueError:
-                            print("\nInvalid input.")
+                        except InvalidExpressionException as e:
+                            print(f"Error when updating variables: {e}")
                     break
 
                 print("\nThat is not a valid variable. Please try again.")
