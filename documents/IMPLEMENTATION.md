@@ -42,7 +42,8 @@ Linear time complexity O(n) is efficient in cases where it is necessary to seque
 
 ## Deficiencies and improvement ideas 
 
-Currently the program is incomplete. 
+Currently the program is incomplete. The application works in most cases, but has some known bugs that are outlined below. The user interface is not visually great and will be improved. The input validator requires improvements to fix the bugs and refactoring to make it cleaner and more modular.
+
 
 ### Bugs
 
