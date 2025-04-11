@@ -5,9 +5,21 @@ from .stack import Stack
 from .queue import Queue
 from .exceptions import InvalidExpressionException
 
+
 class RPNEvaluator:
     """The class implements an evaluator for an RPN/postfix mathematical expression and returns
-    the end result for the calculation.
+    the final result of the calculation. 
+    
+    Tokens from the input token queue are taken one at a time, from left to right. If the token is
+    a number, it is placed in the evaluation stack (LIFO-structure). If the token is an operator or
+    function, the required number of operands are popped from the evaluation stack and the calculation
+    is performed. The result of this is then placed into the evaluation stack. Once all the input
+    tokens have been processed, there should only be one number left in the evaluation stack: the
+    final result.
+
+    An error is raised if there is and unrecognised token, there are insufficient operands, or the
+    calculation includes division with zero, taking a square root of a negative nmuber, or an overly
+    large calculation.
 
     Attributes:
         operators (set): A set containing the allowed operators for the calculations
@@ -22,10 +34,10 @@ class RPNEvaluator:
     """
     def __init__(self):
         self.operators = set(["+", "-", "*", "/", "**"])
-        self.one_arg_functions = set(["n", "cos", "sin", "sqrt"]) # 'n' is unary negation
+        self.one_arg_functions = set(["n", "cos", "sin", "sqrt"])  # 'n' is unary negation
         self.two_arg_functions = set(["min", "max"])
 
-    def evaluate_rpn_expression(self, tokens: Queue): # pylint: disable=too-many-statements
+    def evaluate_rpn_expression(self, tokens: Queue):  # pylint: disable=too-many-statements
         """Evaluates an RPN/postfix expression (token by token) and returns the end result of the calculation.
         Uses an evaluation stack to handle the tokens. The last item left in the stack will be the end result.
 
@@ -111,7 +123,7 @@ class RPNEvaluator:
         except OverflowError as e:
             raise InvalidExpressionException(
                 "Maximum data limit exceeded! Please try a smaller calculation."
-                ) from e
+            ) from e
         except ZeroDivisionError as e:
             raise InvalidExpressionException("Division with zero undefined!") from e
 
@@ -134,11 +146,14 @@ class RPNEvaluator:
                 case "sin":
                     return math.sin(math.radians(operand))
                 case "sqrt":
-                    return math.sqrt(operand)
+                    try:
+                        return math.sqrt(operand)
+                    except ValueError as e: 
+                        raise InvalidExpressionException("sqrt(x) defined for positive input only!")
         except OverflowError as e:
             raise InvalidExpressionException(
                 "Maximum data limit exceeded! Please try a smaller calculation."
-                ) from e
+            ) from e
 
     def _apply_two_arg_function(self, function: str, operand1: float, operand2: float):
         """Apply a function on two arguments/operands (i.e. numbers).
@@ -159,4 +174,4 @@ class RPNEvaluator:
         except OverflowError as e:
             raise InvalidExpressionException(
                 "Maximum data limit exceeded! Please try a smaller calculation."
-                ) from e
+            ) from e
