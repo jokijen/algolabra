@@ -2,6 +2,7 @@ import unittest
 from src.core.input_validator import InputValidator
 from src.core.exceptions import InvalidExpressionException
 
+
 class TestInputValidator(unittest.TestCase):
     def setUp(self):
         self.user_variables = {
@@ -20,39 +21,39 @@ class TestInputValidator(unittest.TestCase):
         new_var_char = "A"
         new_var_input = "45"
         self.validator.update_user_vars(new_var_char, new_var_input)
-        self.assertEqual("45", self.validator.user_variables["A"])
+        self.assertEqual(self.validator.user_variables["A"], "45")
 
     def test_validate_var_character_accepts_valid_char(self):
         result = self.validator.validate_var_character("Z")
-        self.assertEqual(result, True)
+        self.assertTrue(result)
 
     def test_validate_var_character_adoes_not_accept_small_ascii_char(self):
         result = self.validator.validate_var_character("z")
-        self.assertEqual(result, False)
+        self.assertFalse(result)
 
     def test_validate_var_character_adoes_not_accept_two_capital_ascii_chars(self):
         result = self.validator.validate_var_character("AA")
-        self.assertEqual(result, False)
+        self.assertFalse(result)
 
     def test_validate_var_character_adoes_not_accept_number(self):
         result = self.validator.validate_var_character("5")
-        self.assertEqual(result, False)
+        self.assertFalse(result)
 
     def test_is_number_identifies_float(self):
         result = self.validator.is_number("5.7")
-        self.assertEqual(result, True)
+        self.assertTrue(result)
 
     def test_is_number_identifies_neg_int(self):
         result = self.validator.is_number("-9")
-        self.assertEqual(result, True)
+        self.assertTrue(result)
 
     def test_is_number_does_not_identify_function_with_number(self):
         result = self.validator.is_number("sqrt(3)")
-        self.assertEqual(result, False)
+        self.assertFalse(result)
 
     def test_is_number_does_not_identify_expression(self):
         result = self.validator.is_number("3+3")
-        self.assertEqual(result, False)
+        self.assertFalse(result)
 
     def test_expand_variables_correctly_expands_variable(self):
         user_expression = "A**2.5"
