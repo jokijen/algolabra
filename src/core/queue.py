@@ -1,11 +1,12 @@
 from collections import deque
 
+
 class Queue:
     """A first-in-first-out (FIFO) queue that can be used when implementing the Shunting-Yard algorithm.
 
     Attributes:
         _tokens (deque): A deque ("double-ended-queue") used to hold tokens
-    
+
     Methods:
         __repr__: Returns the tokens as a list
         enqueue(token): Adds the token to the end of the queue

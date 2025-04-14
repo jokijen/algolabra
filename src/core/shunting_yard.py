@@ -5,6 +5,7 @@ from .stack import Stack
 from .queue import Queue
 from .exceptions import InvalidExpressionException
 
+
 class ShuntingYard:
     """The class implements the Shunting-Yard algorithm and converts infix expressions into RPN/postfix.
 
@@ -18,7 +19,8 @@ class ShuntingYard:
     """
     def __init__(self):
         self.operators = set(["+", "-", "*", "/", "**"])
-        self.functions = set(["n", "cos", "sin", "sqrt", "min", "max"]) # 'n' is unary negation
+        # 'n' is the unary negation
+        self.functions = set(["n", "cos", "sin", "sqrt", "min", "max"])
         self.precedence = {"+": 1,
                            "-": 1,
                            "max": 3,
@@ -31,7 +33,7 @@ class ShuntingYard:
                            "cos": 4,
                            "sin": 4}
 
-    def convert_to_rpn(self, tokens: list) -> Queue: # pylint: disable=too-many-statements
+    def convert_to_rpn(self, tokens: list) -> Queue:  # pylint: disable=too-many-statements
         """Converts an infix mathematical expression to RPN/postfix.
         
         Args:
@@ -69,7 +71,7 @@ class ShuntingYard:
                 while not operator_stack.is_empty():
                     prev_in_stack = operator_stack.peek()
 
-                    if prev_in_stack =="(":
+                    if prev_in_stack == "(":
                         operator_stack.enqueue(token)
                         break
 

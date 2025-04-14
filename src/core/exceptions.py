@@ -2,5 +2,6 @@
 given by the user is not valid
 """
 
+
 class InvalidExpressionException(Exception):
     pass

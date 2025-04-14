@@ -1,11 +1,12 @@
 from collections import deque
 
+
 class Stack:
     """A last-in-first-out (LIFO) stack that can be used when implementing the Shunting-Yard algorithm.
 
     Attributes:
         _tokens (deque): A deque ("double-ended-queue") used to hold tokens
-    
+
     Methods:
         enqueue(token): Adds the token to the (top of) the stack
         dequeue: Removes and returns the token from top of the stack
