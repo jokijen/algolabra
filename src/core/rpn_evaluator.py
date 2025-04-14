@@ -9,7 +9,7 @@ from .exceptions import InvalidExpressionException
 class RPNEvaluator:
     """The class implements an evaluator for an RPN/postfix mathematical expression and returns
     the final result of the calculation. 
-    
+
     Tokens from the input token queue are taken one at a time, from left to right. If the token is
     a number, it is placed in the evaluation stack (LIFO-structure). If the token is an operator or
     function, the required number of operands are popped from the evaluation stack and the calculation
@@ -43,7 +43,7 @@ class RPNEvaluator:
 
         Args:
             tokens -- tokens that form an RPN/postfix mathematical expression
-        
+
         Returns: The only object in the evaluation stack or error
         """
         evaluation_stack = Stack()
@@ -99,12 +99,12 @@ class RPNEvaluator:
 
     def _apply_operator(self, operator: str, operand1: float, operand2: float):
         """Apply an operator on two operands (i.e. numbers).
-        
+
         Args:
             operator -- the operator to be applied
             operand1 -- a number that the operator takes as first input
             operand2 -- a number that the operator takes as second input
-        
+
         Returns: The result of the operation performed
         """
         try:
@@ -130,11 +130,11 @@ class RPNEvaluator:
     def _apply_one_arg_function(self, function: str, operand: float):
         """Apply a function on an argument/operand (i.e. number). In the cases of cos and sin
         the operand is first converted to radians.
-        
+
         Args:
             function -- name of the function to be applied
             operand -- a number that the function takes as input
-        
+
         Returns: The result of the operation performed
         """
         try:
@@ -142,14 +142,15 @@ class RPNEvaluator:
                 case "n":
                     return -operand
                 case "cos":
-                    return math.cos(math.radians(operand))
+                    return round(math.cos(math.radians(operand)), 12)
                 case "sin":
-                    return math.sin(math.radians(operand))
+                    return round(math.sin(math.radians(operand)), 12)
                 case "sqrt":
                     try:
                         return math.sqrt(operand)
-                    except ValueError as e: 
-                        raise InvalidExpressionException("sqrt(x) defined for positive input only!")
+                    except ValueError as e:
+                        raise InvalidExpressionException(
+                            "sqrt(x) is defined for positive input only!") from e
         except OverflowError as e:
             raise InvalidExpressionException(
                 "Maximum data limit exceeded! Please try a smaller calculation."
@@ -157,12 +158,12 @@ class RPNEvaluator:
 
     def _apply_two_arg_function(self, function: str, operand1: float, operand2: float):
         """Apply a function on two arguments/operands (i.e. numbers).
-        
+
         Args:
             function -- name of the function to be applied
             operand1 -- a number that the function takes as first input
             operand2 -- a number that the function takes as second input
-        
+
         Returns: The result of the operation performed
         """
         try:
