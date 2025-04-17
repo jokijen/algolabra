@@ -95,7 +95,7 @@ class RPNEvaluator:
 
         if evaluation_stack.peek().is_integer():
             return int(evaluation_stack.peek())
-        return evaluation_stack.peek()
+        return round(evaluation_stack.peek(), 10)
 
     def _apply_operator(self, operator: str, operand1: float, operand2: float):
         """Apply an operator on two operands (i.e. numbers).
@@ -142,9 +142,9 @@ class RPNEvaluator:
                 case "n":
                     return -operand
                 case "cos":
-                    return round(math.cos(math.radians(operand)), 12)
+                    return math.cos(math.radians(operand))
                 case "sin":
-                    return round(math.sin(math.radians(operand)), 12)
+                    return math.sin(math.radians(operand))
                 case "sqrt":
                     try:
                         return math.sqrt(operand)

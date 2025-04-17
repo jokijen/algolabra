@@ -6,6 +6,7 @@ import re
 import string
 from .exceptions import InvalidExpressionException
 
+
 class InputValidator:
     """The class is used to validate the mathematical expression provided by the user and return
     the expression as a valid, tokenised list where each component of the epression (e.g. digit,
@@ -27,7 +28,7 @@ class InputValidator:
         Args: 
         var_character -- a capital letter A-Z (key)
         var_value -- any value string (value)
-        
+
         Returns: Nothing, but raises and exception with failure
         """
         try:
@@ -41,7 +42,7 @@ class InputValidator:
 
         Args: 
         char_input -- string input given by the user as variable to define
-        
+
         Returns: True if character input is ASCII upprecase (bool), False otherwise
         """
         if len(char_input) == 1:
@@ -73,7 +74,7 @@ class InputValidator:
         user_expression -- the mathematical expression to check for variables
         recursion_depth -- a counter used when limiting recursion depth and detecting circular
         references in the variables (default 0)
-        
+
         Returns: An expanded expression with no more variables to expand or exception
         """
         expanded_expression = ""
@@ -110,10 +111,10 @@ class InputValidator:
     def validate_first_and_last(self, user_expression: str):
         """Validates the first and last characters in the expression by checking if they are numbers and
         comparing them to the allowed start/end characters.
-        
-        Args: 
+
+        Args:
         user_expression -- the original mathematical expression to compare
-        
+
         Returns: Nothing if first and last characters are valid or raises an exception otherwise
         """
         first_char = user_expression[0]
@@ -132,11 +133,11 @@ class InputValidator:
     def check_for_invalid_characters(self, user_expression: str, tokens: list):
         """Chacks for invalid characters by comparing the original expression string to a parsed
         (to string) version of the token list.
-        
-        Args: 
+
+        Args:
         user_expression -- the original mathematical expression to compare
         tokens -- the token list formed of the original mathematical expression
-        
+
         Returns: Nothing if no invalid characters are present or raises an exception if they are
         """
         string_from_tokens = "".join(tokens)
@@ -146,10 +147,10 @@ class InputValidator:
     def tokenise_expression(self, user_expression: str) -> list:
         """Takes a mathematical expression and uses regex to identify allowed characters/patterns
         in it, which is used to tokenise the founc elements.
-                
-        Args: 
+
+        Args:
         user_expression -- the original mathematical expression to compare
-        
+
         Returns: The expression as list of str tokens
         """
         tokens = []
@@ -175,10 +176,10 @@ class InputValidator:
     def get_bracket_value(self, token: str) -> int:
         """Takes a token as input, checks if it is a left or right bracket and returns an int:
         1 for opening/left and -1 for closing/right barcket, or 0 if not a bracket.
-               
-        Args: 
+
+        Args:
         token -- s token from the user's mathematical expression input
-        
+
         Returns: An int value 1/-1/0 representing opening/closing/not bracket
         """
         if token == "(":
@@ -192,10 +193,10 @@ class InputValidator:
         Checks for: correctly paired brackets, no consecutive operators, correct number of
         args for two arg functions (max/min). Attaches unary negative to relevant number or
         converts it to "n" for clarity. 
-               
-        Args: 
+
+        Args:
         tokens -- tokenised version of the user's mathematical expression input
-        
+
         Returns: A list of valid tokens of type str or float
         """
         validated_tokens = []
@@ -205,7 +206,7 @@ class InputValidator:
 
         for i, token in enumerate(tokens):
             if previous_is_neg:
-                previous_is_neg = False # The number was added in the last iteration
+                previous_is_neg = False  # The number was added in the last iteration
                 continue
 
             if token == " ":
@@ -273,10 +274,10 @@ class InputValidator:
         and last character are valid. Tokenises the string into a list of str type tokens. Checks
         for invalid characters that were not tokenised. Finally converts token list to a list of
         valid tokens.
-               
-        Args: 
+
+        Args:
         user_expression -- user's mathematical expression
-        
+
         Returns: The expression as list of valid tokens of type str or float
         """
         expanded_expression = self.expand_variables(user_expression)

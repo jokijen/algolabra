@@ -8,6 +8,7 @@ from core.rpn_evaluator import RPNEvaluator
 # Intialise an empty dictionary for the user's variables
 USER_VARS = {}
 
+
 def print_intro():
     print("***************************************************************\n")
     print("*** Welcome to SciCalc -- the simple scientific calculator! ***\n")
@@ -15,8 +16,10 @@ def print_intro():
     print("SciCalc (in a nutshell):")
     print("Give a mathematical expression and get the solution.")
 
+
 def print_separator():
     print("\n" + "*" * 50)
+
 
 def print_instructions():
     print("\nAllowed inputs:\n")
@@ -27,9 +30,10 @@ def print_instructions():
     print("* Two argument functions: minimum 'min(x, y)', maximum 'max(x, y)'")
     print("* Other characters: brackets '(', ')', and comma ',' for max and min e.g. 'min(1, 9)'")
     print("\nYou can also use capital letters A-Z as variables and set values for them.")
-    print("The allowed inputs for variable values are the same as above, but the validity " \
-    "will only be checked when the variable is used in an expression.")
+    print("The allowed inputs for variable values are the same as above, but the validity "
+          "will only be checked when the variable is used in an expression.")
     print("Nested variables are allowed, but make sure they don't form an infinite cycle.")
+
 
 def print_commands():
     print("\nCommands:\n")
@@ -37,6 +41,7 @@ def print_commands():
     print("2: Set a variable")
     print("3: List all defined variables")
     print("q: Quit SciCalc\n")
+
 
 def print_expression_help():
     print_instructions()
@@ -52,13 +57,14 @@ def print_expression_help():
     print("Valid: '3 * 4 + (-5.67) / (sin(9) + 2) * min((-5), (-2.3))'")
     print("\nNot valid: '(- 2)**a*(-5.7)' (space after unary negative; invalid character)")
     print("              ^    ^")
-    print("Not valid: '8,5/(max(sqrt(9), -4)+pi' (comma instead of period; " \
-    "negative number not in brackets)")
+    print("Not valid: '8,5/(max(sqrt(9), -4)+pi' (comma instead of period; "
+          "negative number not in brackets)")
     print("             ^                ^")
     print("Not valid: '3 / 3A + 2) / 0' (inexplicit multiplication; division with zero)")
     print("                 ^        ^")
 
-def main(): # pylint: disable=too-many-statements
+
+def main():  # pylint: disable=too-many-statements
     validator = InputValidator(USER_VARS)
     sy = ShuntingYard()
     rpn_evaluator = RPNEvaluator()
