@@ -36,68 +36,86 @@ class InputValidator:
         except (TypeError, ValueError) as e:
             raise InvalidExpressionException("Could not update variables.") from e
 
-    def validate_var_character(self, char_input: str) -> bool:
-        """Checks if user provided character is a single ASCII uppercase letter (i.e. A-Z) and
-        returns bool True/False
+    def validate_expression(self, user_expression: str) -> list:
+        """Takes the user's mathematical expression as input. Expands all variables used (and
+        recursively) variables in the variables). Ensures the string is not empty and that first
+        and last character are valid. Tokenises the string into a list of str type tokens. Checks
+        for invalid characters that were not tokenised. Finally converts token list to a list of
+        valid tokens.
+
+        Args:
+        user_expression -- user's mathematical expression
+
+        Returns: The expression as list of valid tokens of type str or float
+        """
+        var_to_set = None
+
+        spaceless_expression = self._remove_spaces(user_expression)
+
+        if self._user_defines_variable(spaceless_expression):
+            var_to_set = spaceless_expression[0]
+            spaceless_expression = spaceless_expression[2:]
+
+        self._validate_length(spaceless_expression)
+        self._validate_first_and_last(spaceless_expression)
+
+        # Tokenise the expression
+        tokens = self._tokenise_expression(spaceless_expression)
+
+        # Ensure there are no surplus characters that are not valid
+        self._check_for_invalid_characters(spaceless_expression, tokens)
+
+        validated_tokens = self._validate_tokens(tokens)
+
+        return (validated_tokens, var_to_set)
+
+    def _remove_spaces(self, user_expression: str) -> str:
+        """Removes spaces from the expression by iterating through it and forming a new string from
+        the non-space characters.
 
         Args: 
-        char_input -- string input given by the user as variable to define
+        user_expression -- the mathematical expression to remove spaces from
 
-        Returns: True if character input is ASCII upprecase (bool), False otherwise
+        Returns: A string containing the user_expression without spaces
         """
-        if len(char_input) == 1:
-            if char_input in string.ascii_uppercase:
-                return True
-        return False
-
-    def is_number(self, str_input: str) -> bool:
-        """Checks if argument string contains a number e.g. '-3', '7.89'
-
-        Args: 
-        str_input -- string input to check
-
-        Returns: True if str_input contains a valid number that can be converted into float,
-        False otherwise
-        """
-        try:
-            float(str_input)
-            return True
-        except ValueError:
-            return False
-
-    def expand_variables(self, user_expression: str, recursion_depth=0) -> str:
-        """Expands any variables used in the expression, and recursively expands any variables used
-        in the value of an inspected variable. Raises an exception if the recursion depth of 24 has
-        been exceeded indicating that the variables have been defined in a circular fashion.
-
-        Args: 
-        user_expression -- the mathematical expression to check for variables
-        recursion_depth -- a counter used when limiting recursion depth and detecting circular
-        references in the variables (default 0)
-
-        Returns: An expanded expression with no more variables to expand or exception
-        """
-        expanded_expression = ""
-
-        if recursion_depth > 24:
-            raise InvalidExpressionException("Circular reference for variable!")
+        spaceless_str = ""
 
         for char in user_expression:
-            if char in string.ascii_uppercase:
-                if not char in self.user_variables.keys():
-                    raise InvalidExpressionException("The variable {char} has not been defined!")
+            if char != " ":
+                spaceless_str += char
 
-                var_value = self.user_variables[char]
+        return spaceless_str
 
-                # Check variable string for any variables.
-                expanded_var = self.expand_variables(var_value, recursion_depth + 1)
-                expanded_expression += "(" + expanded_var + ")"
-            else:
-                expanded_expression += char
+    def _user_defines_variable (self, user_expression: str) -> bool:
+        """Checks if a user_expression starts with a capital ASCII letter followed by an equals sign
+        (e.g. "A="), which would indicate that the user wants to set a value for a variable
 
-        return expanded_expression
+        Args: 
+        user_expression -- the mathematical expression to check
 
-    def validate_length(self, user_expression: str):
+        Returns: True if the user wants to set a variable, False otherwise
+        """
+        if len(user_expression) >= 2:
+            if user_expression[0] in string.ascii_uppercase:
+                if user_expression[1] == "=":
+                    return True
+        return False
+
+    def _expand_variable(self, token: str) -> float:
+        """Expands any variable that has been set by the user and returns its value.
+
+        Args: 
+        token -- The string token containing an upper case ASCII letter to evaluate
+
+        Returns: The value from the dictionary containing set variables (type str)
+        """
+        if not token in self.user_variables.keys():
+            raise InvalidExpressionException("The variable {token} has not been defined!")
+
+        var_value = self.user_variables[token]
+        return float(var_value)
+
+    def _validate_length(self, user_expression: str):
         """Ensures no empty strings will be accepted.
 
         Args:
@@ -108,7 +126,7 @@ class InputValidator:
         if len(user_expression) < 1:
             raise InvalidExpressionException("Empty expression!")
 
-    def validate_first_and_last(self, user_expression: str):
+    def _validate_first_and_last(self, user_expression: str):
         """Validates the first and last characters in the expression by checking if they are numbers and
         comparing them to the allowed start/end characters.
 
@@ -130,21 +148,7 @@ class InputValidator:
                 if not last_char in self.allowed_end_chars:
                     raise InvalidExpressionException("Invalid last character!")
 
-    def check_for_invalid_characters(self, user_expression: str, tokens: list):
-        """Chacks for invalid characters by comparing the original expression string to a parsed
-        (to string) version of the token list.
-
-        Args:
-        user_expression -- the original mathematical expression to compare
-        tokens -- the token list formed of the original mathematical expression
-
-        Returns: Nothing if no invalid characters are present or raises an exception if they are
-        """
-        string_from_tokens = "".join(tokens)
-        if user_expression != string_from_tokens:
-            raise InvalidExpressionException("The expression contains invalid characters!")
-
-    def tokenise_expression(self, user_expression: str) -> list:
+    def _tokenise_expression(self, user_expression: str) -> list:
         """Takes a mathematical expression and uses regex to identify allowed characters/patterns
         in it, which is used to tokenise the founc elements.
 
@@ -160,6 +164,7 @@ class InputValidator:
             | (?P<float>\d*\.\d+)       # Match positive floats
             | (?P<integer>\d+\.?)       # Match positive integers
             | (?P<negative_sign>[,])    # Match the minus sign
+            | (?P<variable>[A-Z])       # Match variables A-Z
             | (?P<constant>pi)          # Match constants
             | (?P<function>cos|sin|sqrt|min|max) # Match functions
             | (?P<operator>\*\*|[+\-*/]) # Match operators
@@ -173,22 +178,21 @@ class InputValidator:
 
         return token_list
 
-    def get_bracket_value(self, token: str) -> int:
-        """Takes a token as input, checks if it is a left or right bracket and returns an int:
-        1 for opening/left and -1 for closing/right barcket, or 0 if not a bracket.
+    def _check_for_invalid_characters(self, user_expression: str, tokens: list):
+        """Chacks for invalid characters by comparing the original expression string to a parsed
+        (to string) version of the token list.
 
         Args:
-        token -- s token from the user's mathematical expression input
+        user_expression -- the original mathematical expression to compare
+        tokens -- the token list formed of the original mathematical expression
 
-        Returns: An int value 1/-1/0 representing opening/closing/not bracket
+        Returns: Nothing if no invalid characters are present or raises an exception if they are
         """
-        if token == "(":
-            return 1
-        if token == ")":
-            return -1
-        return 0
+        string_from_tokens = "".join(tokens)
+        if user_expression != string_from_tokens:
+            raise InvalidExpressionException("The expression contains invalid characters!")
 
-    def validate_tokens(self, tokens: list) -> list:
+    def _validate_tokens(self, tokens: list) -> list:
         """Takes the tokenised mathematical expression as input. Removes: spaces and commas.
         Checks for: correctly paired brackets, no consecutive operators, correct number of
         args for two arg functions (max/min). Attaches unary negative to relevant number or
@@ -206,55 +210,68 @@ class InputValidator:
 
         for i, token in enumerate(tokens):
             if previous_is_neg:
-                previous_is_neg = False  # The number was added in the last iteration
+                previous_is_neg = False  # The number token inspected was added in the last iteration
                 continue
-
-            if token == " ":
-                continue
-
-            if token == ",":
-                expected_commas -= 1
-
-            bracket_equality += self.get_bracket_value(token)
-            if bracket_equality < 0:
-                raise InvalidExpressionException("Closing bracket before an opening bracket!")
-
-            if token in ("max", "min"):
-                expected_commas += 1
 
             # Handle unary minus by attaching it to a number and adding the neg float to validated
             # tokens, or replacing the minus with "n" for negative, if in between brackets
             if token == "-":
+
                 if i > 0 and validated_tokens[-1] == "(":
-                    if self.is_number(tokens[i+1]):
+                    if self._is_number(tokens[i+1]):
                         validated_tokens.append(-float(tokens[i+1]))
                         previous_is_neg = True
                         continue
 
-                    if tokens[i+1] == "(" or tokens[i+1:i+2] == " (":
+                    if tokens[i+1] in string.ascii_uppercase:
+                        var_value = self._expand_variable(tokens[i+1])
+                        validated_tokens.append(-var_value)
+                        previous_is_neg = True
+                        continue
+
+                    if tokens[i+1] == "(":
                         token = "n"
+
                 if i > 0 and validated_tokens[-1] == ",":
                     raise InvalidExpressionException(
                         f"Unary negative missing brackets!: '{tokens[i]+tokens[i+1]}'"
                         )
 
-            # Convert numbers to floats
-            if self.is_number(token):
-                validated_tokens.append(float(token))
+            if token in ("max", "min"):
+                expected_commas += 1
 
-            # Convert constants to floats
-            elif token in self.constants:
-                validated_tokens.append(self.constants[token])
+            if token == ",":
+                expected_commas -= 1
+                continue
+
+            bracket_equality += self._get_bracket_value(token)
+            if bracket_equality < 0:
+                raise InvalidExpressionException("Closing bracket before an opening bracket!")
 
             # Ensure there are no consecutive operators
-            elif token in self.operators:
+            if token in self.operators:
                 if i > 0 and validated_tokens[-1] in self.operators:
                     raise InvalidExpressionException(
                         f"Consecutive operators not allowed!: '{validated_tokens[-1]}', '{token}'"
                         )
-                validated_tokens.append(token)
-            else:
-                validated_tokens.append(token)
+
+            # Expand variables and convert to floats
+            if token in string.ascii_uppercase:
+                var_value = self._expand_variable(token)
+                validated_tokens.append(var_value)
+                continue
+
+            # Convert numbers to floats
+            if self._is_number(token):
+                validated_tokens.append(float(token))
+                continue
+
+            # Convert constants to floats
+            if token in self.constants:
+                validated_tokens.append(self.constants[token])
+                continue
+
+            validated_tokens.append(token)
 
             # check brackets enclose neg no.
             # check functions have correct params
@@ -268,30 +285,32 @@ class InputValidator:
 
         return validated_tokens
 
-    def validate_expression(self, user_expression: str) -> list:
-        """Takes the user's mathematical expression as input. Expands all variables used (and
-        recursively) variables in the variables). Ensures the string is not empty and that first
-        and last character are valid. Tokenises the string into a list of str type tokens. Checks
-        for invalid characters that were not tokenised. Finally converts token list to a list of
-        valid tokens.
+    def _get_bracket_value(self, token: str) -> int:
+        """Takes a token as input, checks if it is a left or right bracket and returns an int:
+        1 for opening/left and -1 for closing/right barcket, or 0 if not a bracket.
 
         Args:
-        user_expression -- user's mathematical expression
+        token -- s token from the user's mathematical expression input
 
-        Returns: The expression as list of valid tokens of type str or float
+        Returns: An int value 1/-1/0 representing opening/closing/not bracket
         """
-        expanded_expression = self.expand_variables(user_expression)
-        print("Expanded expression:", expanded_expression)
+        if token == "(":
+            return 1
+        if token == ")":
+            return -1
+        return 0
 
-        self.validate_length(expanded_expression)
-        self.validate_first_and_last(expanded_expression)
+    def _is_number(self, str_input: str) -> bool:
+        """Checks if argument string contains a number e.g. '-3', '7.89'
 
-        # Tokenise the expression
-        tokens = self.tokenise_expression(expanded_expression)
+        Args: 
+        str_input -- string input to check
 
-        # Ensure there are no surplus characters that are not valid
-        self.check_for_invalid_characters(expanded_expression, tokens)
-
-        validated_tokens = self.validate_tokens(tokens)
-
-        return validated_tokens
+        Returns: True if str_input contains a valid number that can be converted into float,
+        False otherwise
+        """
+        try:
+            float(str_input)
+            return True
+        except ValueError:
+            return False

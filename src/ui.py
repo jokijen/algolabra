@@ -7,7 +7,7 @@ from core.rpn_evaluator import RPNEvaluator
 
 # Intialise an empty dictionary for the user's variables
 USER_VARS = {}
-
+USER_VARS["A"] = -4.5
 
 def print_intro():
     print("***************************************************************\n")
@@ -18,7 +18,7 @@ def print_intro():
 
 
 def print_separator():
-    print("\n" + "*" * 50)
+    print("\n" + "*" * 70)
 
 
 def print_instructions():
@@ -37,9 +37,8 @@ def print_instructions():
 
 def print_commands():
     print("\nCommands:\n")
-    print("1: Get a solution for an expression")
-    print("2: Set a variable")
-    print("3: List all defined variables")
+    print("1: Get a solution for an expression or set a variable")
+    print("2: List all defined variables")
     print("q: Quit SciCalc\n")
 
 
@@ -96,20 +95,24 @@ def main():  # pylint: disable=too-many-statements
                     print_expression_help()
 
                 else:
-                    print("Original expression:", expression_input)
-                    print("")
+                    print("Original expression:")
+                    print(expression_input)
 
                     try:
                         validated_expression = validator.validate_expression(expression_input)
-                        print("\nValidated tokens:", validated_expression)
+                        # Variable the user wants to set e.g. "A"
+                        var_to_set = validated_expression[1]
+                        print("\nValidated tokens:")
+                        print(validated_expression[0])
 
                     except InvalidExpressionException as e:
                         print(f"Validation error: {e}")
                         continue
 
                     try:
-                        rpn_expression = sy.convert_to_rpn(validated_expression)
-                        print("\nReverse Polish Notation (RPN):", rpn_expression)
+                        rpn_expression = sy.convert_to_rpn(validated_expression[0])
+                        print("\nReverse Polish Notation (RPN):")
+                        print(rpn_expression)
 
                     except InvalidExpressionException as e:
                         print(f"Error when converting to RPN: {e}")
@@ -117,56 +120,40 @@ def main():  # pylint: disable=too-many-statements
 
                     try:
                         end_result = rpn_evaluator.evaluate_rpn_expression(rpn_expression)
-                        print("\nFinal result:", end_result)
-                        print_separator()
-
-                        continue
+                        print("\nFinal result:")
+                        print(end_result)
 
                     except InvalidExpressionException as e:
                         print(f"Error when evaluating the RPN expression: {e}")
                         continue
 
-        # Set a variable
-        elif user_input == "2":
-            while True:
-                print("\nWhich variable A-Z would you like to set? (e.g. 'A', or 'c' to cancel):")
-                var_character = input(">>> ")
+                    if var_to_set:
+                        if var_to_set in USER_VARS:
+                            print("\nThe variable already has a value. "
+                            "('c' cancel or anything else to continue)")
+                            command = input(">>> ")
 
-                if var_character == "c":
-                    break
-
-                # The user gives a valid uppercase letter
-                if validator.validate_var_character(var_character):
-                    if var_character in USER_VARS:
-                        print("\nThe variable already has a value. "
-                        "('c' cancel or anything else to continue)")
-                        command = input(">>> ")
-
-                        if command == "c":
-                            continue
-
-                    while True:
-                        var_value = input(f"\nGive value for {var_character}: ")
-
+                            if command == "c":
+                                continue
                         try:
-                            USER_VARS.update({var_character: var_value})
-                            validator.update_user_vars(var_character, var_value)
-                            print(f"\nVariable {var_character} = {var_value} set!")
-                            break
+                            USER_VARS.update({var_to_set: end_result})
+                            validator.update_user_vars(var_to_set, end_result)
+                            print(f"\nVariable {var_to_set} = {end_result} set!")
+
                         except InvalidExpressionException as e:
                             print(f"Error when updating variables: {e}")
-                    break
 
-                print("\nThat is not a valid variable. Please try again.")
+                    print_separator()
 
-        # Print all defined variables and their values
-        elif user_input == "3":
+
+        # Print all defined variables and their values in alphabetical order
+        elif user_input == "2":
             print("\nDefined variables:\n")
             if not USER_VARS:
                 print("You have no defined variables\n")
                 continue
-            for key, value in USER_VARS.items():
-                print(f"{key} = {value}")
+            for key in sorted(USER_VARS.keys()):
+                print(f"{key} = {USER_VARS[key]}")
 
         else:
             print("\nNice try! That is not a valid command. Try again.")
