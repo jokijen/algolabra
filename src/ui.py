@@ -1,5 +1,6 @@
 """User interface for the calculator.
 """
+import string
 from core.exceptions import InvalidExpressionException
 from core.input_validator import InputValidator
 from core.shunting_yard import ShuntingYard
@@ -26,7 +27,8 @@ def print_instructions():
     print("* Numbers 0-9 (integer or floating point using the period '.' as the decimal separator)")
     print("* Constants: 'pi'")
     print("* Operators: plus '+', minus '-', multiplication '*', division '/', exponentiation '**'")
-    print("* One argument functions: square root 'sqrt(x)', sine 'sin(x)', cosine 'cos(x)'")
+    print("* One argument functions: square root 'sqrt(x)', sine 'sin(x)', cosine 'cos(x)' "
+        "(note!: When using 'sin' and 'cos', 'x' will be converted to radians first, so use degrees)")
     print("* Two argument functions: minimum 'min(x, y)', maximum 'max(x, y)'")
     print("* Other characters: brackets '(', ')', and comma ',' for max and min e.g. 'min(1, 9)'")
     print("\nYou can also use capital letters A-Z as variables and set values for them.")
@@ -128,20 +130,33 @@ def main():  # pylint: disable=too-many-statements
                         continue
 
                     if var_to_set:
-                        if var_to_set in USER_VARS:
-                            print("\nThe variable already has a value. "
-                            "('c' cancel or anything else to continue)")
-                            command = input(">>> ")
+                        while True:
+                            if var_to_set in USER_VARS:
+                                print(f"\nThe variable {var_to_set} already has a value. Do you want to "
+                                      "overwrite value?")
+                                print("[y (yes) / n (no) / A-Z (to select new variable)]")
+                                command = input(">>> ")
 
-                            if command == "c":
-                                continue
-                        try:
+                                if command in string.ascii_uppercase:
+                                    var_to_set = command
+                                    continue
+
+                                if command == "y":
+                                    USER_VARS.update({var_to_set: end_result})
+                                    validator.update_user_vars(var_to_set, end_result)
+                                    print(f"\nVariable {var_to_set} = {end_result} set!")
+                                    break
+
+                                if command == "n":
+                                    print("\nVariable not updated")
+                                    break
+
+                                print("Invalid command. Please try again.")
+
                             USER_VARS.update({var_to_set: end_result})
                             validator.update_user_vars(var_to_set, end_result)
                             print(f"\nVariable {var_to_set} = {end_result} set!")
-
-                        except InvalidExpressionException as e:
-                            print(f"Error when updating variables: {e}")
+                            break
 
                     print_separator()
 

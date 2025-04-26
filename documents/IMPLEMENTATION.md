@@ -49,8 +49,6 @@ Currently the program is incomplete. The application works in most cases, but ha
 
 - min/max does not function correctly when the arguments are functions. I need to add extra brackets around both arguments in the InputValidator
 
-- sin and cos don't function correctly when the argument is in radians already (e.g. 'sin(pi)')
-
 
 ### Future improvement
 

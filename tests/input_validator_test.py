@@ -116,9 +116,9 @@ class TestInputValidator(unittest.TestCase):
         result = self.validator.validate_expression(user_expression)
         self.assertEqual(result, (tokenised, None))
 
-    def test_validate_expression_accepts_valid_short_expression(self):
-        user_expression = "(-A)+5"
-        tokenised = ['(', -1.45, ')', '+', 5.0]
+    def test_validate_expression_accepts_valid_short_expression2(self):
+        user_expression = "(-A)+5+pi"
+        tokenised = ['(', -1.45, ')', '+', 5.0, '+', 3.141592653589793]
         result = self.validator.validate_expression(user_expression)
         self.assertEqual(result, (tokenised, None))
 
@@ -138,3 +138,34 @@ class TestInputValidator(unittest.TestCase):
         user_expression = "(-3)***2.5"
         with self.assertRaises(InvalidExpressionException):
             self.validator.validate_expression(user_expression)
+
+    def test_validate_tokens_does_not_accecpt_too_many_commas(self):
+        token_input = ['min', '(','1', ',', '2', ',', '3', ')']
+        with self.assertRaises(InvalidExpressionException):
+            self.validator._validate_tokens(token_input)
+
+    def test_validate_tokens_does_not_accecpt_too_few_commas(self):
+        token_input = ['min', '(','1', '3', ')']
+        with self.assertRaises(InvalidExpressionException):
+            self.validator._validate_tokens(token_input)
+
+    def test_validate_tokens_does_not_accecpt_right_bracket_first(self):
+        token_input = ['1', '+', ')', '1', '+', '3', '(']
+        with self.assertRaises(InvalidExpressionException):
+            self.validator._validate_tokens(token_input)
+
+    def test_validate_tokens_does_not_accecpt_unequal_brackets(self):
+        token_input = ['1', '+', '(', '-', '5', ')', '+', '3', '(']
+        with self.assertRaises(InvalidExpressionException):
+            self.validator._validate_tokens(token_input)
+
+    def test_validate_tokens_does_not_accecpt_unary_neg_missing_brackets(self):
+        token_input = ['min', '(', '9', ',', '-', '8', ')']
+        with self.assertRaises(InvalidExpressionException):
+            self.validator._validate_tokens(token_input)
+
+    def test_validate_tokens_converts_unary_neg_to_n(self):
+        token_input = ['1', '+', '(', '-', '(', '3', '+', '3', ')', ')']
+        tokenised = [1, '+', '(', 'n', '(', 3.0, '+', 3, ')', ')']
+        result = self.validator._validate_tokens(token_input)
+        self.assertEqual(result, tokenised)

@@ -199,7 +199,7 @@ class InputValidator:
         converts it to "n" for clarity. 
 
         Args:
-        tokens -- tokenised version of the user's mathematical expression input
+        tokens -- A list of strings - tokenised version of the user's mathematical expression input
 
         Returns: A list of valid tokens of type str or float
         """
@@ -232,7 +232,7 @@ class InputValidator:
                     if tokens[i+1] == "(":
                         token = "n"
 
-                if i > 0 and validated_tokens[-1] == ",":
+                if i > 0 and tokens[i-1] == ",":
                     raise InvalidExpressionException(
                         f"Unary negative missing brackets!: '{tokens[i]+tokens[i+1]}'"
                         )
