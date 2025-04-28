@@ -77,10 +77,13 @@ def set_variable(var_to_set: str, var_value: int | float, validator: InputValida
                 continue
 
             if command == "y":
-                USER_VARS.update({var_to_set: var_value})
-                validator.update_user_variable(var_to_set, var_value)
-                print(f"\nVariable {var_to_set} = {var_value} set!")
-                return
+                try:
+                    USER_VARS.update({var_to_set: var_value})
+                    validator.update_user_variable(var_to_set, var_value)
+                    print(f"\nVariable {var_to_set} = {var_value} set!")
+                    return
+                except (TypeError, ValueError) as e:
+                    raise InvalidExpressionException("Could not update variable.") from e                    
 
             if command == "n":
                 print("\nVariable not updated")

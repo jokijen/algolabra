@@ -159,11 +159,6 @@ class TestInputValidator(unittest.TestCase):
         with self.assertRaises(InvalidExpressionException):
             self.validator._validate_tokens(token_input)
 
-    def test_validate_tokens_does_not_accecpt_unary_neg_missing_brackets(self):
-        token_input = ['min', '(', '9', ',', '-', '8', ')']
-        with self.assertRaises(InvalidExpressionException):
-            self.validator._validate_tokens(token_input)
-
     def test_validate_tokens_converts_unary_neg_to_n(self):
         token_input = ['1', '+', '(', '-', '(', '3', '+', '3', ')', ')']
         tokenised = [1, '+', '(', 'n', '(', 3.0, '+', 3, ')', ')']

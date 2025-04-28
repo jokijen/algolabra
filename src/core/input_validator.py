@@ -31,10 +31,7 @@ class InputValidator:
 
         Returns: Nothing, but raises and exception with failure
         """
-        try:
-            self.user_variables.update({var_character: var_value})
-        except (TypeError, ValueError) as e:
-            raise InvalidExpressionException("Could not update variables.") from e
+        self.user_variables.update({var_character: var_value})
 
     def validate_expression(self, user_expression: str) -> list:
         """Takes the user's mathematical expression as input. Expands all variables used (and
@@ -205,6 +202,7 @@ class InputValidator:
         """
         validated_tokens = []
         bracket_equality = 0
+        min_max_brackets_required = set()
         previous_is_neg = False
         expected_commas = 0
 
@@ -212,6 +210,16 @@ class InputValidator:
             if previous_is_neg:
                 previous_is_neg = False  # The number token inspected was added in the last iteration
                 continue
+
+            bracket_equality += self._get_bracket_value(token)
+            # Add a closing bracket for min/max if necessary
+            if bracket_equality in min_max_brackets_required:
+                validated_tokens.append(")")
+                min_max_brackets_required.remove(bracket_equality)
+            if bracket_equality < 0:
+                raise InvalidExpressionException(
+                    "Closing bracket before an opening bracket or too many closing brackets!"
+                    )
 
             # Handle unary minus by attaching it to a number and adding the neg float to validated
             # tokens, or replacing the minus with "n" for negative, if in between brackets
@@ -232,21 +240,21 @@ class InputValidator:
                     if tokens[i+1] == "(":
                         token = "n"
 
-                if i > 0 and tokens[i-1] == ",":
-                    raise InvalidExpressionException(
-                        f"Unary negative missing brackets!: '{tokens[i]+tokens[i+1]}'"
-                        )
-
+            # Min/max arguments must be enclosed in brackets to ensure they are correctly calculated. This is
+            # done by adding an opening bracket after 'min'/'max', adding closing and opening bracket when there
+            # is a comma, and finally adding a closing bracket when the bracket equality is the same as in the start
             if token in ("max", "min"):
+                min_max_brackets_required.add(bracket_equality) # Save the value requiring an extra closing bracket
                 expected_commas += 1
+                validated_tokens.append(token)
+                validated_tokens.append("(")
+                continue
 
             if token == ",":
                 expected_commas -= 1
+                validated_tokens.append(")")
+                validated_tokens.append("(")
                 continue
-
-            bracket_equality += self._get_bracket_value(token)
-            if bracket_equality < 0:
-                raise InvalidExpressionException("Closing bracket before an opening bracket!")
 
             # Ensure there are no consecutive operators
             if token in self.operators:
@@ -273,11 +281,8 @@ class InputValidator:
 
             validated_tokens.append(token)
 
-            # check brackets enclose neg no.
-            # check functions have correct params
-
         if bracket_equality != 0:
-            raise InvalidExpressionException("Unequal brackets!")
+            raise InvalidExpressionException(f"Unequal brackets!: {bracket_equality}x closing bracket missing")
         if expected_commas < 0:
             raise InvalidExpressionException("Unnecessary commas! Check the two argument functions")
         if expected_commas > 0:
