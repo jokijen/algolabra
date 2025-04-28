@@ -122,7 +122,7 @@ class TestInputValidator(unittest.TestCase):
         result = self.validator.validate_expression(user_expression)
         self.assertEqual(result, (tokenised, None))
 
-    def test_validate_expression_sets_variable(self):
+    def test_validate_expression_identifies_request_to_set_variable(self):
         user_expression = "L = (-9)**3"
         variable = "L"
         tokenised = ['(', -9.0, ')', '**', 3.0]
