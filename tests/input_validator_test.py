@@ -59,7 +59,7 @@ class TestInputValidator(unittest.TestCase):
 
     def test_validate_first_and_last_accepts_allowed_start_end_chars(self):
         try:
-            self.validator._validate_first_and_last("(-3)*(32+2)")
+            self.validator._validate_first_and_last("sqrt(3)*(32+2)")
         except InvalidExpressionException:
             self.fail("validate_first_and_last raised an unnecessary exception")
 

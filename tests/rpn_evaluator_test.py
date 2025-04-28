@@ -136,20 +136,20 @@ class TestRPNEvaluator(unittest.TestCase):
         with self.assertRaises(InvalidExpressionException):
             self.evaluator.evaluate_rpn_expression(tokens)
 
-    def test_not_enough_operands_for_operator(self):
+    def test_insufficient_operands_for_operator(self):
         tokens = Queue()
         tokens.enqueue(1.0)
         tokens.enqueue('+')
         with self.assertRaises(InvalidExpressionException):
             self.evaluator.evaluate_rpn_expression(tokens)
 
-    def test_not_enough_operands_for_one_arg_function(self):
+    def test_insufficient_operands_for_one_arg_function(self):
         tokens = Queue()
         tokens.enqueue('sqrt')
         with self.assertRaises(InvalidExpressionException):
             self.evaluator.evaluate_rpn_expression(tokens)
 
-    def test_not_enough_operands_for_two_arg_function(self):
+    def test_insufficient_operands_for_two_arg_function(self):
         tokens = Queue()
         tokens.enqueue(1.0)
         tokens.enqueue('min')
