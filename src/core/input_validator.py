@@ -22,7 +22,7 @@ class InputValidator:
         self.allowed_start_chars = set(["c", "p", "s", "m", "(", ".", " "])
         self.allowed_end_chars = set(["i", ")", ".", " "])
 
-    def update_user_vars(self, var_character: str, var_value: str):
+    def update_user_variable(self, var_character: str, var_value: str):
         """Updates the dictionary self.user_variables with new variable (key-value pair).
 
         Args: 
@@ -192,7 +192,7 @@ class InputValidator:
         if user_expression != string_from_tokens:
             raise InvalidExpressionException("The expression contains invalid characters!")
 
-    def _validate_tokens(self, tokens: list) -> list:
+    def _validate_tokens(self, tokens: list) -> list:  # pylint: disable=too-many-statements
         """Takes the tokenised mathematical expression as input. Removes: spaces and commas.
         Checks for: correctly paired brackets, no consecutive operators, correct number of
         args for two arg functions (max/min). Attaches unary negative to relevant number or

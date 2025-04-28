@@ -18,7 +18,7 @@ class TestInputValidator(unittest.TestCase):
     def test_update_user_vars_updates_user_vars(self):
         new_var_char = "A"
         new_var_input = "45"
-        self.validator.update_user_vars(new_var_char, new_var_input)
+        self.validator.update_user_variable(new_var_char, new_var_input)
         self.assertEqual(self.validator.user_variables["A"], "45")
 
     def test_is_number_identifies_float(self):
