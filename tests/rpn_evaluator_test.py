@@ -9,52 +9,27 @@ class TestRPNEvaluator(unittest.TestCase):
         self.evaluator = RPNEvaluator()
 
     def test_addition(self):
-        tokens = Queue()
-        tokens.enqueue(30.0)
-        tokens.enqueue(15.5)
-        tokens.enqueue('+')
-        print("Tokens in queue:", tokens)
-        result = self.evaluator.evaluate_rpn_expression(tokens)
+        result = self.evaluator._apply_operation('+', 30.0, 15.5)
         self.assertEqual(45.5, result)
 
     def test_subtraction(self):
-        tokens = Queue()
-        tokens.enqueue(-10.0)
-        tokens.enqueue(10.0)
-        tokens.enqueue('-')
-        result = self.evaluator.evaluate_rpn_expression(tokens)
+        result = self.evaluator._apply_operation('-', -10.0, 10.0)
         self.assertEqual(-20, result)
 
     def test_multiplication(self):
-        tokens = Queue()
-        tokens.enqueue(2.0)
-        tokens.enqueue(3.6)
-        tokens.enqueue('*')
-        result = self.evaluator.evaluate_rpn_expression(tokens)
+        result = self.evaluator._apply_operation('*', 2.0, 3.6)
         self.assertEqual(7.2, result)
 
     def test_division_with_valid_operands_accepted(self):
-        tokens = Queue()
-        tokens.enqueue(30.0)
-        tokens.enqueue(2.0)
-        tokens.enqueue('/')
-        result = self.evaluator.evaluate_rpn_expression(tokens)
+        result = self.evaluator._apply_operation('/', 30.0, 2.0)
         self.assertEqual(15, result)
 
     def test_division_with_zero_not_accepted(self):
-        tokens = Queue()
-        tokens.enqueue(30.0)
-        tokens.enqueue(0.0)
-        tokens.enqueue('/')
         with self.assertRaises(InvalidExpressionException):
-            self.evaluator.evaluate_rpn_expression(tokens)
+            self.evaluator._apply_operation('/', 8.0, 0.0)
 
     def test_exponentiation(self):
-        tokens = Queue()
-        tokens.enqueue(30.0)
-        tokens.enqueue(0.0)
-        tokens.enqueue('**')
-        result = self.evaluator.evaluate_rpn_expression(tokens)
+        result = self.evaluator._apply_operation('**', 20.0, 0.0)
         self.assertEqual(1, result)
 
     def test_unary_negation(self):
@@ -81,18 +56,12 @@ class TestRPNEvaluator(unittest.TestCase):
         self.assertEqual(1, result)
 
     def test_square_root_of_positive_accepted(self):
-        tokens = Queue()
-        tokens.enqueue(9.0)
-        tokens.enqueue('sqrt')
-        result = self.evaluator.evaluate_rpn_expression(tokens)
+        result = self.evaluator._apply_operation('sqrt', None, 9.0)
         self.assertEqual(3, result)
 
     def test_square_root_of_negative_not_accepted(self):
-        tokens = Queue()
-        tokens.enqueue(-9.0)
-        tokens.enqueue('sqrt')
         with self.assertRaises(InvalidExpressionException):
-            self.evaluator.evaluate_rpn_expression(tokens)
+            self.evaluator._apply_operation('sqrt', None, -9.0)
 
     def test_min_with_first_arg_min(self):
         tokens = Queue()
@@ -125,6 +94,42 @@ class TestRPNEvaluator(unittest.TestCase):
         tokens.enqueue('max')
         result = self.evaluator.evaluate_rpn_expression(tokens)
         self.assertEqual(20, result)
+
+    # sqrt(3*3)*3**2.5+sin(51/2+25.5)-cos(51/2+25.5)/max(1+1,0)*(-1)
+    def test_complex_expression(self):
+        tokens = Queue()
+        tokens.enqueue(3.0)
+        tokens.enqueue(3.0)
+        tokens.enqueue('*')
+        tokens.enqueue('sqrt')
+        tokens.enqueue(3.0)
+        tokens.enqueue(2.5)
+        tokens.enqueue('**')
+        tokens.enqueue('*')
+        tokens.enqueue(51.0)
+        tokens.enqueue(2.0)
+        tokens.enqueue('/')
+        tokens.enqueue(25.5)
+        tokens.enqueue('+')
+        tokens.enqueue('sin')
+        tokens.enqueue('+')
+        tokens.enqueue(51.0)
+        tokens.enqueue(2.0)
+        tokens.enqueue('/')
+        tokens.enqueue(25.5)
+        tokens.enqueue('+')
+        tokens.enqueue('cos')
+        tokens.enqueue(1.0)
+        tokens.enqueue(1.0)
+        tokens.enqueue('+')
+        tokens.enqueue(0.0)
+        tokens.enqueue('max')
+        tokens.enqueue('/')
+        tokens.enqueue(-1.0)
+        tokens.enqueue('*')
+        tokens.enqueue('-')
+        result = self.evaluator.evaluate_rpn_expression(tokens)
+        self.assertEqual(47.8571779613, result)
 
     def test_no_tokens(self):
         tokens = Queue()

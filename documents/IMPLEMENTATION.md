@@ -46,12 +46,12 @@ Linear time complexity O(n) is efficient in cases where it is necessary to seque
 
 ## Deficiencies and improvement ideas 
 
-Currently the program is incomplete. The application works in most cases, but has some known bugs that are outlined below. The user interface is not very clean visually and will be improved. The input validator requires improvements to fix the bugs and refactoring to make it cleaner and more modular.
+The user interface could be visually clearer and will be improved. 
 
 
 ### Bugs
 
-- min/max does not function correctly when the arguments are functions. I need to add extra brackets around both arguments in the InputValidator
+There are no identified bugs currently.
 
 
 ### Future improvement

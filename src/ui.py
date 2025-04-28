@@ -64,7 +64,7 @@ def evaluate_expression(validator: InputValidator, sy: ShuntingYard, rpn_evaluat
             return
 
 
-def set_variable(var_to_set: str, var_value: int | float, validator: InputValidator):
+def set_variable(var_to_set: str, var_value: int | float, validator: InputValidator):  # pylint: disable=too-many-statements
     while True:
         if var_to_set in USER_VARS:
             print(f"\nThe variable {var_to_set} already has a value. Do you want to "
@@ -77,13 +77,7 @@ def set_variable(var_to_set: str, var_value: int | float, validator: InputValida
                 continue
 
             if command == "y":
-                try:
-                    USER_VARS.update({var_to_set: var_value})
-                    validator.update_user_variable(var_to_set, var_value)
-                    print(f"\nVariable {var_to_set} = {var_value} set!")
-                    return
-                except (TypeError, ValueError) as e:
-                    raise InvalidExpressionException("Could not update variable.") from e                    
+                break
 
             if command == "n":
                 print("\nVariable not updated")
@@ -92,10 +86,13 @@ def set_variable(var_to_set: str, var_value: int | float, validator: InputValida
             print("Invalid command. Please try again.")
             continue
 
-        USER_VARS.update({var_to_set: var_value})
-        validator.update_user_variable(var_to_set, var_value)
-        print(f"\nVariable {var_to_set} = {var_value} set!")
-        return
+        try:
+            USER_VARS.update({var_to_set: var_value})
+            validator.update_user_variable(var_to_set, var_value)
+            print(f"\nVariable {var_to_set} = {var_value} set!")
+            return
+        except (TypeError, ValueError) as e:
+            raise InvalidExpressionException("Could not update variable.") from e
 
 
 def main():

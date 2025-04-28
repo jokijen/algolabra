@@ -33,9 +33,8 @@ class RPNEvaluator:
         apply_two_arg_function (function, operand1, operand2):
     """
     def __init__(self):
-        self.operators = set(["+", "-", "*", "/", "**"])
-        self.one_arg_functions = set(["n", "cos", "sin", "sqrt"])  # 'n' is unary negation
-        self.two_arg_functions = set(["min", "max"])
+        self.one_operand_operations = set(["n", "cos", "sin", "sqrt"])  # 'n' is unary negation
+        self.two_operand_operations = set(["+", "-", "*", "/", "**", "min", "max"])
 
     def evaluate_rpn_expression(self, tokens: Queue):  # pylint: disable=too-many-statements
         """Evaluates an RPN/postfix expression (token by token) and returns the end result of the calculation.
@@ -58,33 +57,23 @@ class RPNEvaluator:
                 evaluation_stack.enqueue(token)
                 continue
 
-            if token in self.operators:
-                if evaluation_stack.get_size() < 2:
-                    raise InvalidExpressionException("Not enough operands for an operator")
-
-                operand2 = evaluation_stack.dequeue()
-                operand1 = evaluation_stack.dequeue()
-
-                result = self._apply_operator(token, operand1, operand2)
-                evaluation_stack.enqueue(result)
-
-            elif token in self.one_arg_functions:
+            if token in self.one_operand_operations:
                 if evaluation_stack.get_size() < 1:
-                    raise InvalidExpressionException("Not enough operands for a one argument function")
+                    raise InvalidExpressionException("Not enough operands, one required")
 
-                operand1 = evaluation_stack.dequeue()
+                operand = evaluation_stack.dequeue()
 
-                result = self._apply_one_arg_function(token, operand1)
+                result = self._apply_operation(token, None, operand)
                 evaluation_stack.enqueue(result)
 
-            elif token in self.two_arg_functions:
+            elif token in self.two_operand_operations:
                 if evaluation_stack.get_size() < 2:
-                    raise InvalidExpressionException("Not enough operands for a one argument function")
+                    raise InvalidExpressionException("Not enough operands, two required")
 
                 operand2 = evaluation_stack.dequeue()
                 operand1 = evaluation_stack.dequeue()
 
-                result = self._apply_two_arg_function(token, operand1, operand2)
+                result = self._apply_operation(token, operand1, operand2)
                 evaluation_stack.enqueue(result)
 
             else:
@@ -97,18 +86,18 @@ class RPNEvaluator:
             return int(evaluation_stack.peek())
         return round(evaluation_stack.peek(), 10)
 
-    def _apply_operator(self, operator: str, operand1: float, operand2: float):
-        """Apply an operator on two operands (i.e. numbers).
+    def _apply_operation(self, function: str, operand1: float, operand2: float):  # pylint: disable=too-many-return-statements
+        """Apply a function or operator on two operands (i.e. numbers).
 
         Args:
-            operator -- the operator to be applied
+            function -- name of the function (may be an operator) to be applied
             operand1 -- a number that the operator takes as first input
             operand2 -- a number that the operator takes as second input
 
         Returns: The result of the operation performed
         """
         try:
-            match operator:
+            match function:
                 case "+":
                     return operand1 + operand2
                 case "-":
@@ -119,6 +108,22 @@ class RPNEvaluator:
                     return operand1 / operand2
                 case "**":
                     return operand1 ** operand2
+                case "sqrt":
+                    try:
+                        return math.sqrt(operand2)
+                    except ValueError as e:
+                        raise InvalidExpressionException(
+                            "sqrt(x) is defined for positive input only!") from e
+                case "n":
+                    return -operand2
+                case "cos":
+                    return math.cos(math.radians(operand2))
+                case "sin":
+                    return math.sin(math.radians(operand2))
+                case "min":
+                    return min(operand1, operand2)
+                case "max":
+                    return max(operand1, operand2)
 
         except OverflowError as e:
             raise InvalidExpressionException(
@@ -126,53 +131,3 @@ class RPNEvaluator:
             ) from e
         except ZeroDivisionError as e:
             raise InvalidExpressionException("Division with zero undefined!") from e
-
-    def _apply_one_arg_function(self, function: str, operand: float):
-        """Apply a function on an argument/operand (i.e. number). In the cases of cos and sin
-        the operand is first converted to radians.
-
-        Args:
-            function -- name of the function to be applied
-            operand -- a number that the function takes as input
-
-        Returns: The result of the operation performed
-        """
-        try:
-            match function:
-                case "n":
-                    return -operand
-                case "cos":
-                    return math.cos(math.radians(operand))
-                case "sin":
-                    return math.sin(math.radians(operand))
-                case "sqrt":
-                    try:
-                        return math.sqrt(operand)
-                    except ValueError as e:
-                        raise InvalidExpressionException(
-                            "sqrt(x) is defined for positive input only!") from e
-        except OverflowError as e:
-            raise InvalidExpressionException(
-                "Maximum data limit exceeded! Please try a smaller calculation."
-            ) from e
-
-    def _apply_two_arg_function(self, function: str, operand1: float, operand2: float):
-        """Apply a function on two arguments/operands (i.e. numbers).
-
-        Args:
-            function -- name of the function to be applied
-            operand1 -- a number that the function takes as first input
-            operand2 -- a number that the function takes as second input
-
-        Returns: The result of the operation performed
-        """
-        try:
-            match function:
-                case "min":
-                    return min(operand1, operand2)
-                case "max":
-                    return max(operand1, operand2)
-        except OverflowError as e:
-            raise InvalidExpressionException(
-                "Maximum data limit exceeded! Please try a smaller calculation."
-            ) from e
