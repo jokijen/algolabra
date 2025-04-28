@@ -13,6 +13,7 @@ class TestRPNEvaluator(unittest.TestCase):
         tokens.enqueue(30.0)
         tokens.enqueue(15.5)
         tokens.enqueue('+')
+        print("Tokens in queue:", tokens)
         result = self.evaluator.evaluate_rpn_expression(tokens)
         self.assertEqual(45.5, result)
 
@@ -161,5 +162,14 @@ class TestRPNEvaluator(unittest.TestCase):
         tokens.enqueue(90000.0)
         tokens.enqueue(90000.0)
         tokens.enqueue('**')
+        with self.assertRaises(InvalidExpressionException):
+            self.evaluator.evaluate_rpn_expression(tokens)
+
+    def test_too_many_items_left_in_stack(self):
+        tokens = Queue()
+        tokens.enqueue(1.0)
+        tokens.enqueue(1.0)
+        tokens.enqueue(1.0)
+        tokens.enqueue('+')
         with self.assertRaises(InvalidExpressionException):
             self.evaluator.evaluate_rpn_expression(tokens)

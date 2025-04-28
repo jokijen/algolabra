@@ -48,7 +48,7 @@ class RPNEvaluator:
         """
         evaluation_stack = Stack()
 
-        if not tokens:
+        if tokens.is_empty():
             raise InvalidExpressionException("No tokens to evaluate!")
 
         while not tokens.is_empty():
