@@ -30,7 +30,7 @@ Käyttäjälle tarjotaan nyt kaksi vaihtoehtoa:
 - "1: Get a solution for an expression or set a variable"
 - "2: List all defined variables"
 
-Käyttäjä voi siis syöttää lausekkeen tyyliin 7+7" joka määrittää muuttujan "A=14", tai "7+7", jolloin palautetaan vastaus "14". Tämä lienee nyt ok?
+Käyttäjä voi siis syöttää lausekkeen tyyliin "7+7" joka määrittää muuttujan "A=14", tai "7+7", jolloin palautetaan vastaus "14". Tämä lienee nyt ok?
 
 Olen suunnitellut hieman yksikkötestejä laajempaa testausta ja törmännyt Pytestin monkeypatchiin, jonka avulla uskoisin saavani tehtyä end-to-end testejä. Tämä (eli end-to-end ja yksikkötestit) riittänee testien osalta?
 

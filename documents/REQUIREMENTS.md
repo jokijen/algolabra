@@ -1,9 +1,9 @@
 # Requirement specification
 
-Degree Programme: Tietojenkäsittelytieteen kandidaatti (TKT)
-Programming language: Python
-Language of documentation: English with the exception of weekly reports, which will be in Finnish
-Peer-review programming languages: Python
+- Degree Programme: Tietojenkäsittelytieteen kandidaatti (TKT)
+- Programming language: Python
+- Language of documentation: English with the exception of weekly reports, which will be in Finnish
+- Peer-review programming languages: Python
 
 
 ## Algorithms and data structures implemented
@@ -13,12 +13,12 @@ The project is an implementation of a scientific calculator that takes in a math
 
 ## Problem statement
 
-The user can give a mathematical expression and the application will calculate and output its value. 
+The user can give a mathematical expression and the application will calculate and output its value. The user may also set values for variables (capital ASCII, A-Z).
 
 
 ## Accepted inputs and their usage
 
-The program receives as input a mathematical expression consisting of numbers (0–9), operators (+, -, *, /, ^), accepted characters ("(", ")", “.”, “,”) and functions (cos, sin, sqrt, max, min). The program prints the solution as an output or an informative error message if the input is invalid. The user can also set variable. 
+The program receives as input a mathematical expression consisting of numbers (0–9), operators (+, -, *, /, ^), accepted characters ("(", ")", “.”, “,”) and functions (cos, sin, sqrt, max, min). The program prints the solution as an output or an informative error message if the input is invalid. The user can also set a variable. 
 
 
 ## Performance and time complexity
