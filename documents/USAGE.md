@@ -41,7 +41,4 @@ exit
 
 ## Run tests
 
-After setting up the application using the above instructions, you can run tests with: 
-```
-poetry pytest
-```
+After setting up the application using the above instructions, you can run tests with the instructions found in [TESTING.md](TESTING.md#running-the-tests)
