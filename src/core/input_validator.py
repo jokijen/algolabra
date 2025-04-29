@@ -107,7 +107,7 @@ class InputValidator:
         Returns: The value from the dictionary containing set variables (type str)
         """
         if not token in self.user_variables.keys():
-            raise InvalidExpressionException("The variable {token} has not been defined!")
+            raise InvalidExpressionException(f"The variable {token} has not been defined!")
 
         var_value = self.user_variables[token]
         return float(var_value)
@@ -284,7 +284,9 @@ class InputValidator:
         if bracket_equality != 0:
             raise InvalidExpressionException(f"Unequal brackets!: {bracket_equality}x closing bracket missing")
         if expected_commas < 0:
-            raise InvalidExpressionException("Unnecessary commas! Check the two argument functions")
+            raise InvalidExpressionException(
+                "Unnecessary commas! Use period '.' as the decimal separator and check any two argument functions"
+                )
         if expected_commas > 0:
             raise InvalidExpressionException("Not enough commas! Check the two argument functions")
 

@@ -74,16 +74,16 @@ def set_variable(var_to_set: str, var_value: int | float, validator: InputValida
         if var_to_set in USER_VARS:
             print(f"\nThe variable {var_to_set} already has a value. Do you want to "
                   "overwrite value? \n[y (yes) / n (no) / A-Z (to select new variable)]")
-            command = input(">>> ")
+            choice = input(">>> ")
 
-            if command in string.ascii_uppercase:
-                var_to_set = command
+            if choice in string.ascii_uppercase and len(choice) == 1:
+                var_to_set = choice
                 continue
 
-            if command == "y":
+            if choice == "y":
                 break
 
-            if command == "n":
+            if choice == "n":
                 print("\nVariable not updated")
                 return
 
@@ -91,13 +91,10 @@ def set_variable(var_to_set: str, var_value: int | float, validator: InputValida
             continue
         break
 
-    try:
-        USER_VARS.update({var_to_set: var_value})
-        validator.update_user_variable(var_to_set, var_value)
-        print(f"\nVariable {var_to_set} = {var_value} set!")
-        return
-    except (TypeError, ValueError) as e:
-        raise InvalidExpressionException("Could not update variable.") from e
+    USER_VARS.update({var_to_set: var_value})
+    validator.update_user_variable(var_to_set, var_value)
+    print(f"\nVariable {var_to_set} = {var_value} set!")
+    return
 
 def main():
     validator = InputValidator(USER_VARS)
