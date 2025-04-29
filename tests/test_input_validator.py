@@ -41,7 +41,7 @@ class TestInputValidator(unittest.TestCase):
         result = self.validator._expand_variable("A")
         self.assertEqual(result, 1.45)
 
-    def test_validate_length_does_not_accept_too_short_input(self):
+    def test_validate_length_does_not_accept_empty_expression(self):
         with self.assertRaises(InvalidExpressionException):
             self.validator._validate_length("")
 
