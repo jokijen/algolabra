@@ -9,8 +9,14 @@ from utils import printer
 
 # Intialise an empty dictionary for the user's variables
 USER_VARS = {}
-USER_VARS["A"] = -4.5  # For testing purposes
 
+
+def get_user_command():
+    printer.print_command_options()
+    user_command = input("Please give a command:\n>>> ")
+    printer.print_separator()
+
+    return user_command
 
 def evaluate_expression(validator: InputValidator, sy: ShuntingYard, rpn_evaluator: RPNEvaluator):  # pylint: disable=too-many-statements
     while True:
@@ -63,13 +69,11 @@ def evaluate_expression(validator: InputValidator, sy: ShuntingYard, rpn_evaluat
 
             return
 
-
-def set_variable(var_to_set: str, var_value: int | float, validator: InputValidator):  # pylint: disable=too-many-statements
+def set_variable(var_to_set: str, var_value: int | float, validator: InputValidator):
     while True:
         if var_to_set in USER_VARS:
             print(f"\nThe variable {var_to_set} already has a value. Do you want to "
-                  "overwrite value?")
-            print("[y (yes) / n (no) / A-Z (to select new variable)]")
+                  "overwrite value? \n[y (yes) / n (no) / A-Z (to select new variable)]")
             command = input(">>> ")
 
             if command in string.ascii_uppercase:
@@ -83,17 +87,17 @@ def set_variable(var_to_set: str, var_value: int | float, validator: InputValida
                 print("\nVariable not updated")
                 return
 
-            print("Invalid command. Please try again.")
+            print("\nInvalid command. Please try again.")
             continue
+        break
 
-        try:
-            USER_VARS.update({var_to_set: var_value})
-            validator.update_user_variable(var_to_set, var_value)
-            print(f"\nVariable {var_to_set} = {var_value} set!")
-            return
-        except (TypeError, ValueError) as e:
-            raise InvalidExpressionException("Could not update variable.") from e
-
+    try:
+        USER_VARS.update({var_to_set: var_value})
+        validator.update_user_variable(var_to_set, var_value)
+        print(f"\nVariable {var_to_set} = {var_value} set!")
+        return
+    except (TypeError, ValueError) as e:
+        raise InvalidExpressionException("Could not update variable.") from e
 
 def main():
     validator = InputValidator(USER_VARS)
@@ -105,20 +109,18 @@ def main():
     print("\nWhat would you like to do next?")
 
     while True:
-        printer.print_commands()
-        user_input = input("Please give a command:\n>>> ")
-        printer.print_separator()
+        user_command = get_user_command()
 
-        if user_input == "q":
+        if user_command == "q":
             print("\n*** Quitting the program. Bye! ***\n")
             break
 
         # Solve a mathematical expression
-        if user_input == "1":
+        if user_command == "1":
             evaluate_expression(validator, sy, rpn_evaluator)
 
         # Print all defined variables and their values in alphabetical order
-        elif user_input == "2":
+        elif user_command == "2":
             printer.print_variables(USER_VARS)
 
         else:

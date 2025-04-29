@@ -24,7 +24,7 @@ def print_instructions():
     print("(e.g. 'A=5*5' sets 'A' to be '25').")
 
 
-def print_commands():
+def print_command_options():
     print("\nCommands:\n")
     print("1: Get a solution for an expression or set a variable")
     print("2: List all defined variables")
@@ -56,7 +56,7 @@ def print_variables(user_vars: dict):
     print("\nDefined variables:\n")
 
     if not user_vars:
-        print("You have no defined variables\n")
+        print("You have no defined variables")
         return
 
     for key in sorted(user_vars.keys()):
