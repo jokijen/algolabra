@@ -7,7 +7,10 @@ from .exceptions import InvalidExpressionException
 
 
 class ShuntingYard:
-    """The class implements the Shunting-Yard algorithm and converts infix expressions into RPN/postfix.
+    """The class implements the Shunting-Yard algorithm that converts infix notation expressions into
+    RPN/postfix by using a LIFO stack to hold operators and functions, and an output queue to hold
+    the final output. Operators and functions are given a presedence, which (in addition to parentheses)
+    ensure the correct order of operations.
 
     Attributes:
         operators (set): A set containing the allowed operators for the calculations

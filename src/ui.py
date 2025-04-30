@@ -7,11 +7,15 @@ from core.shunting_yard import ShuntingYard
 from core.rpn_evaluator import RPNEvaluator
 from utils import printer
 
+
 # Intialise an empty dictionary for the user's variables
 USER_VARS = {}
 
-
 def get_user_command():
+    """Queries the user for a command that determines the action taken by the application.
+    
+    Returns: The user's command (string)
+    """
     printer.print_command_options()
     user_command = input("Please give a command:\n>>> ")
     printer.print_separator()
@@ -19,6 +23,20 @@ def get_user_command():
     return user_command
 
 def evaluate_expression(validator: InputValidator, sy: ShuntingYard, rpn_evaluator: RPNEvaluator):  # pylint: disable=too-many-statements
+    """Queries the user for an expression to evaluate and possibly set as the value of a variable.
+    Validates, tokenises, converts to RPN/postfix, and evaluates the expression.
+    Sets the variable if necessary.
+
+    Args:
+        validator -- InputValidator object whose method validate_expression() is called to validate the
+            user's string type expression and convert it into valid tokens
+        sy -- ShuntingYard object whose method convert_to_rpn() is called to convert the tokenised infix
+            expression to RPN/postfix form (type: Queue)
+        rpn_evaluator -- RPNEvaluator object whose method evaluate_rpn_expression() is called to evaluate
+            the postfix expression Queue
+
+    Returns: Nothing if successful. The value of the expression is printed as output
+    """
     while True:
         print("\nGive a mathematical expression to evaluate ('h' help, 'c' cancel):")
         expression_input = input(">>> ")
@@ -32,7 +50,7 @@ def evaluate_expression(validator: InputValidator, sy: ShuntingYard, rpn_evaluat
         else:
             try:
                 validated_expression = validator.validate_expression(expression_input)
-                # Variable the user wants to set e.g. "A"
+                # Variable the user wants to set. Capital ASCII e.g. "A"
                 var_to_set = validated_expression[1]
 
                 if var_to_set:
@@ -70,6 +88,19 @@ def evaluate_expression(validator: InputValidator, sy: ShuntingYard, rpn_evaluat
             return
 
 def set_variable(var_to_set: str, var_value: int | float, validator: InputValidator):
+    """Sets the value for the variable specified by the user. If the variable is already in use, allows
+    the user to overwrite the old value, continue without updating any variable, or choose a new variable
+    to update with the value. In the last case, the same options are presented to the user if the new
+    variable already has a value as well. 
+
+    Args:
+        var_to_set -- Variable the user wishes to set, capital ASCII A-Z
+        var_value -- Integer or floating point value for the variable
+        validator -- InputValidator object whose method update_user_variable() is called to update the
+            user variables of the object as well
+
+    Returns: Nothing if successful. The action taken is printed as output
+    """
     while True:
         if var_to_set in USER_VARS:
             print(f"\nThe variable {var_to_set} already has a value. Do you want to "
@@ -97,6 +128,11 @@ def set_variable(var_to_set: str, var_value: int | float, validator: InputValida
     return
 
 def main():
+    """The main function for the application that queries the user for commands that determine which action
+    to take. Exiting the while loop terminates the application. 
+
+    Returns: Nothing if successful. Instructions are printed as output
+    """
     validator = InputValidator(USER_VARS)
     sy = ShuntingYard()
     rpn_evaluator = RPNEvaluator()

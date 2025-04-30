@@ -39,6 +39,6 @@ exit
 ```
 
 
-## Run tests
+## Run tests and generate a coverage report
 
-After setting up the application using the above instructions, you can run tests with the instructions found in [TESTING.md](TESTING.md#running-the-tests)
+After setting up the application using the above instructions, you can run tests and generate a coverage report with the instructions found in [TESTING.md](TESTING.md#running-the-tests).

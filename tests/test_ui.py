@@ -1,3 +1,5 @@
+"""End-to-end tests for the application. Calls on main() in ui.py.
+"""
 from src.ui import main
 
 
@@ -31,7 +33,11 @@ def test_main_with_complex_expression(monkeypatch, capsys):
     assert "1.2826920705" in calc_output
     assert "*** Quitting the program. Bye! ***" in calc_output
 
-def test_view_and_set_variables(monkeypatch, capsys):
+def test_main_view_and_set_variables(monkeypatch, capsys):
+    """First set A=3. Then start setting A=0.125, but it has already been defined, so uupdate A with the new value.
+    Start setting A, but it has been defined so test setting b, and finally set B=.1415926536 instead.
+    Start setting A=6, but cancel.
+    """
     user_input = iter([
         "2", "1", "A=sqrt(9)", "2", "1", "A=2**(-3)", "y", "2", "1", "A=pi", "b", "B", "2", "1", "B=6", "n", "2", "q"
         ])
@@ -66,12 +72,14 @@ def test_view_and_set_variables(monkeypatch, capsys):
     assert "3.1415926536" in calc_output
     assert "Invalid command. Please try again." in calc_output
     assert "Variable B = 3.1415926536 set!" in calc_output
+    assert "Variable A = 3.1415926536 set!" not in calc_output
     assert "B = 3.1415926536" in calc_output
 
     assert "[6.0]" in calc_output
     assert "6" in calc_output
     assert "The variable A already has a value. Do you want to overwrite value" in calc_output
     assert "Variable not updated" in calc_output
+    assert "Variable A = 6 set!" not in calc_output
     assert "*** Quitting the program. Bye! ***" in calc_output
 
 def test_main_help(monkeypatch, capsys):
@@ -105,13 +113,22 @@ def test_main_invalid_command(monkeypatch, capsys):
     assert "Nice try! That is not a valid command. Try again." in calc_output
     assert "*** Quitting the program. Bye! ***" in calc_output
 
-def test_main_invalid_expression_commas(monkeypatch, capsys):
-    user_input = iter(["1", "min(1,2,3)", "1/0", "c", "q"])
+def test_main_validation_error(monkeypatch, capsys):
+    user_input = iter(["1", "min(1,2,3)", "c", "q"])
     monkeypatch.setattr('builtins.input',lambda _: next(user_input))
 
     main()
     calc_output, _ = capsys.readouterr()
 
     assert "Validation error: Unnecessary commas!" in calc_output
+    assert "*** Quitting the program. Bye! ***" in calc_output
+
+def test_main_RPN_evaluation_error(monkeypatch, capsys):
+    user_input = iter(["1", "1/0", "c", "q"])
+    monkeypatch.setattr('builtins.input',lambda _: next(user_input))
+
+    main()
+    calc_output, _ = capsys.readouterr()
+
     assert "Error when evaluating the RPN expression: Division with zero undefined!" in calc_output
     assert "*** Quitting the program. Bye! ***" in calc_output

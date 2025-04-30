@@ -8,7 +8,7 @@
 
 ## Algorithms and data structures implemented
 
-The project is an implementation of a scientific calculator that takes in a mathematical expression as user input, validates it, converts it to postfix notation, and solves it. The project uses stack and queue data structures as well as the Shunting-Yard algorith.
+The project is an implementation of a scientific calculator that takes in a mathematical expression as user input, validates it, converts it to postfix notation, and solves it. The project uses stack and queue data structures as well as the Shunting-Yard algorithm.
 
 
 ## Problem statement

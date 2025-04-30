@@ -16,19 +16,19 @@ The application code consists of several classes that implement different parts 
 
 ### Running the app and the user interface
 
-The user interface (UI) is implemented as a command-line interface (CLI). When the application is run the function “main()” is called. A dictionary for user variables is initialised. The user may interact with the application by giving commands as instructed.
+The user interface (UI) is implemented as a command-line interface (CLI). When the application is run the function `main()` is called. A dictionary for user variables is initialised. The user may interact with the application by giving commands as instructed.
 
 
 ### Solving a mathematical expression
 
-The user may input a mathematical expression that they wish to solve. The expression input must be in proper infix form (i.e. operators within the expression, such as “1 + 2”). 
+The user may input a mathematical expression that they wish to solve. The expression input must be in proper infix form (i.e. operators within the expression, such as `1 + 2`). 
 
 The user's expression is first validated and tokenised using the InputValidator. Then it is converted to Reverse Polish Notation (RPN) (i.e. operators follow the numbers/operands, such as “1 2 +”, aka postfix) with the Shunting-Yard algorithm (class: ShuntingYard). Finally, the RPN form expression is evaluated using the RPNEvaluator class, and a value is returned to the user.
 
 
 ### User variables
 
-The user may set a variable by defining the variable they want to set (i.e. capital ASCII letter, A-Z) in their mathematical expression. Example: The mathematical expression input "A=1+2" would set variable "A" to have the value "3". 
+The user may set a variable by defining the variable they want to set (i.e. capital ASCII letter, A-Z) in their mathematical expression. Example: The mathematical expression input `A=1+2` would set variable `A` to have the value `3`. 
 
 The user may also view variables saved in the variables dictionary. 
 

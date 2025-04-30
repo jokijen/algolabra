@@ -1,3 +1,8 @@
+"""The printer module contains functions for printing output to the console for the user interface
+This module is called on by main() in ui.py.
+"""
+
+
 def print_intro():
     print("")
     print("***************************************************************\n")
@@ -40,6 +45,7 @@ def print_expression_help():
     print("* Ensure brackets are correctly paired.")
     print("* Be explicit with negative numbers and enclose them in brackets, e.g. '(-3)'. not '-3'.")
     print("* Be explicit with multiplication, e.g. '3*A', not '3A'.")
+    print("* Complex numbers are not supported")
     print("\nExample expressions:")
     print("Valid: '(-2)**2*(-5.7)'")
     print("Valid: 'Z=8.55 / max(sqrt(9), 4) + pi*3'")
