@@ -178,3 +178,11 @@ class TestRPNEvaluator(unittest.TestCase):
         tokens.enqueue('+')
         with self.assertRaises(InvalidExpressionException):
             self.evaluator.evaluate_rpn_expression(tokens)
+
+    def test_complex_number_raises_exception(self):
+        tokens = Queue()
+        tokens.enqueue(-5.0)
+        tokens.enqueue(0.005)
+        tokens.enqueue('**')
+        with self.assertRaises(InvalidExpressionException):
+            self.evaluator.evaluate_rpn_expression(tokens)

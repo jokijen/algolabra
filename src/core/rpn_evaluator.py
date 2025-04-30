@@ -82,9 +82,14 @@ class RPNEvaluator:
         if evaluation_stack.get_size() != 1:
             raise InvalidExpressionException("Too many items left in stack!")
 
-        if evaluation_stack.peek().is_integer():
-            return int(evaluation_stack.peek())
-        return round(evaluation_stack.peek(), 10)
+        end_result = evaluation_stack.peek()
+
+        if isinstance(end_result, complex):
+            raise InvalidExpressionException("Complex numbers are not supported")
+
+        if end_result.is_integer():
+            return int(end_result)
+        return round(end_result, 10)
 
     def _apply_operation(self, function: str, operand1: float, operand2: float):  # pylint: disable=too-many-return-statements
         """Apply a function or operator on two operands (i.e. numbers).
