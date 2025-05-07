@@ -80,7 +80,7 @@ class RPNEvaluator:
                 raise InvalidExpressionException(f"Unrecognised token: {token}")
 
         if evaluation_stack.get_size() != 1:
-            raise InvalidExpressionException("Too many items left in stack!")
+            raise InvalidExpressionException("Too many items left in stack! Did you perhaps forget an operator?")
 
         end_result = evaluation_stack.peek()
 
