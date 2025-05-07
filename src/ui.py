@@ -11,6 +11,12 @@ from utils import printer
 # Intialise an empty dictionary for the user's variables
 USER_VARS = {}
 
+# Formatting for the CLI
+BOLD = "\033[1m"
+UNDERLINE = "\033[4m"
+RESET = "\033[0m"
+
+
 def get_user_command():
     """Queries the user for a command that determines the action taken by the application.
     
@@ -38,7 +44,7 @@ def evaluate_expression(validator: InputValidator, sy: ShuntingYard, rpn_evaluat
     Returns: Nothing if successful. The value of the expression is printed as output
     """
     while True:
-        print("\nGive a mathematical expression to evaluate ('h' help, 'c' cancel):")
+        print(f"\n{BOLD}Give a mathematical expression to evaluate ('h' help, 'c' cancel):{RESET}")
         expression_input = input(">>> ")
 
         if expression_input == "c":
@@ -61,7 +67,7 @@ def evaluate_expression(validator: InputValidator, sy: ShuntingYard, rpn_evaluat
                 print(validated_expression[0])
 
             except InvalidExpressionException as e:
-                print(f"\nValidation error: {e}")
+                print(f"\n{UNDERLINE}Validation error:{RESET} {e}")
                 continue
 
             try:
@@ -70,7 +76,7 @@ def evaluate_expression(validator: InputValidator, sy: ShuntingYard, rpn_evaluat
                 print(rpn_expression)
 
             except InvalidExpressionException as e:
-                print(f"\nError when converting to RPN: {e}")
+                print(f"\n{UNDERLINE}Error when converting to RPN:{RESET} {e}")
                 continue
 
             try:
@@ -79,7 +85,7 @@ def evaluate_expression(validator: InputValidator, sy: ShuntingYard, rpn_evaluat
                 print(end_result)
 
             except InvalidExpressionException as e:
-                print(f"\nError when evaluating the RPN expression: {e}")
+                print(f"\n{UNDERLINE}Error when evaluating the RPN expression:{RESET} {e}")
                 continue
 
             if var_to_set:
@@ -145,7 +151,7 @@ def main():
         user_command = get_user_command()
 
         if user_command == "q":
-            print("\n*** Quitting the program. Bye! ***\n")
+            printer.print_outro()
             break
 
         # Solve a mathematical expression
