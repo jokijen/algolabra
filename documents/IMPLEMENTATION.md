@@ -21,16 +21,18 @@ The user interface (UI) is implemented as a command-line interface (CLI). When t
 
 ### Solving a mathematical expression
 
-The user may input a mathematical expression that they wish to solve. The expression input must be in proper infix form (i.e. operators within the expression, such as `1 + 2`). 
+The user may input a mathematical expression that they wish to solve. The expression input must be in proper infix form (i.e. operators within the expression, such as `1 + 2 * 3`). They may use integers and floating points numbers, as well as operators (`+`, `-`, `*`, `/`, `**`) and functions (`cos`, `sin`, `sqrt`, `max`, `min`). Input validity also calls for correctly placed parentheses (e.g. to enforce precedence or enclose a negative number).
 
-The user's expression is first validated and tokenised using the InputValidator. Then it is converted to Reverse Polish Notation (RPN) (i.e. operators follow the numbers/operands, such as “1 2 +”, aka postfix) with the Shunting-Yard algorithm (class: ShuntingYard). Finally, the RPN form expression is evaluated using the RPNEvaluator class, and a value is returned to the user.
+The user's expression is first validated and tokenised using the InputValidator. After this the Shunting-Yard algorithm (class: ShuntingYard) is used to convert the expression into Reverse Polish Notation (RPN) (aka postfix) where operators follow the numbers/operands (such as in the example given in the last paragraph `1 2 3 * +`). The Shunting-Yard algorithm uses a FIFO Queue and LIFO Stack for token handling. 
+
+Finally, the RPN form expression is evaluated using the RPNEvaluator. If the expression was valid, a value is returned to the user. Otherwise the user will receive an error message outlining the issue with the input or process.
 
 
 ### User variables
 
 The user may set a variable by defining the variable they want to set (i.e. capital ASCII letter, A-Z) in their mathematical expression. Example: The mathematical expression input `A=1+2` would set variable `A` to have the value `3`. 
 
-The user may also view variables saved in the variables dictionary. 
+The user may also view the variables saved in the variables dictionary. 
 
 
 ## Performance and time complexity
@@ -44,19 +46,12 @@ The overall time complexity is linear time O(n), which is dependent on the lengt
 Linear time complexity O(n) is efficient in cases where it is necessary to sequentially go through the entire input. As the user provided input will not be very long (when used as intended), a more rigorous analysis would not generate any valuable information.
 
 
-## Deficiencies and improvement ideas 
+## Deficiencies and future improvement 
 
-The user interface could be visually clearer and will be improved. 
+The current version is functional and there are no identified bugs. Nonetheless, the application could be improved: 
 
-
-### Bugs
-
-There are no identified bugs currently.
-
-
-### Future improvement
-
-The command-line interface is easy to use, but possibly a graphical user interface could be built with Tkinter. 
+* Some error messages are fairly generic and they could be made even more informative and case-specific
+* The CLI is simple and could be improved visually e.g. clearer layout and use of colours. Alternatively, a GUI could be built with Tkinter.  
 
 
 ## Use of AI tools
@@ -67,6 +62,7 @@ LLMs ChatGPT-4o (Open AI) and Le Chat (Mistral AI) have been used for the follow
 - Assist in solving git issues and understanding programming error notifications
 - Perform translations for docs I initially wrote in Finnish
 - Generate versatile (valid and invalid) test inputs for development purposes
+- Assistance with syntax when using monkeypatch for E2E-testing
 
 
 ## Sources
