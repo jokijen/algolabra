@@ -285,7 +285,8 @@ class InputValidator:
             raise InvalidExpressionException(f"Unequal brackets!: {bracket_equality}x closing bracket missing")
         if expected_commas < 0:
             raise InvalidExpressionException(
-                "Unnecessary commas! Use period '.' as the decimal separator and check any two argument functions"
+                "Unnecessary commas or too many arguments! " \
+                "Use period '.' as the decimal separator and check any two argument functions"
                 )
         if expected_commas > 0:
             raise InvalidExpressionException("Not enough commas! Check the two argument functions")

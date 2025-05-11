@@ -6,21 +6,19 @@ RESET = "\033[0m"
 
 
 def print_intro():
-    #print("")
-    #print("***************************************************************\n")
     print_separator()
     print(f"\n******* {BOLD}Welcome to SciCalc -- the simple scientific calculator!{RESET} *******")
     print_separator()
-    #print("***************************************************************\n")
-    #print("SciCalc (in a nutshell):")
     print("\nGive a mathematical expression and get the solution.")
+    print("You will also get the expression in Reverse Polish Notation (RPN).")
 
 def print_separator():
     print("\n" + "*" * 71)
 
 def print_instructions():
     print(f"\n{BOLD}Allowed inputs:{RESET}\n")
-    print("  * Numbers 0-9 (integer or floating point using the period '.' as the decimal separator)")
+    print("  * Numbers: integer or floating point using the period '.' as the decimal separator")
+    print("    (note!: Enclose negative numbers in brackets, e.g. '(-5.1)')")
     print("  * Constants: 'pi'")
     print("  * Operators: plus '+', minus '-', multiplication '*', division '/', exponentiation '**'")
     print("  * One argument functions: square root 'sqrt(x)', sine 'sin(x)', cosine 'cos(x)'")

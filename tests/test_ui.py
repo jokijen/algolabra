@@ -4,21 +4,26 @@ from src.ui import main
 
 
 def test_main_with_simple_expression(monkeypatch, capsys):
-    user_input = iter(["1", "1 + 2 * (-5.5)", "q"])
+    """Give command '1', then give expression '1 + 2 * (-5.55)', and finally quit program. Result should be '-10.1'
+    """
+    user_input = iter(["1", "1 + 2 * (-5.55)", "q"])
     monkeypatch.setattr('builtins.input',lambda _: next(user_input))
 
     main()
     calc_output, _ = capsys.readouterr()
 
     assert "Validated tokens:" in calc_output
-    assert "[1.0, '+', 2.0, '*', '(', -5.5, ')']" in calc_output
+    assert "[1.0, '+', 2.0, '*', '(', -5.55, ')']" in calc_output
     assert "Reverse Polish Notation (RPN):" in calc_output
-    assert "[1.0, 2.0, -5.5, '*', '+']" in calc_output
+    assert "[1.0, 2.0, -5.55, '*', '+']" in calc_output
     assert "Final result:" in calc_output
-    assert "-9" in calc_output
+    assert "-10.1" in calc_output
     assert "Quitting the program" in calc_output
 
 def test_main_with_complex_expression(monkeypatch, capsys):
+    """Give command '1', then give expression '5*25/900*sqrt(9)+min(sin(60),1)', and finally quit program.
+    Result should be '1.2826920705'
+    """
     user_input = iter(["1", "5*25/900*sqrt(9)+min(sin(60),1)", "q"])
     monkeypatch.setattr('builtins.input',lambda _: next(user_input))
 
@@ -83,6 +88,8 @@ def test_main_view_and_set_variables(monkeypatch, capsys):
     assert "Quitting the program" in calc_output
 
 def test_main_help(monkeypatch, capsys):
+    """Give command '1', then test 'h' help and 'c' cancel. Then quit.
+    """
     user_input = iter(["1", "h", "c", "q"])
     monkeypatch.setattr('builtins.input',lambda _: next(user_input))
 
@@ -92,28 +99,22 @@ def test_main_help(monkeypatch, capsys):
     assert "Expressions should be written with care in proper infix notation." in calc_output
     assert "Quitting the program" in calc_output
 
-
-def test_main_cancel(monkeypatch, capsys):
-    user_input = iter(["1", "c", "q"])
-    monkeypatch.setattr('builtins.input',lambda _: next(user_input))
-
-    main()
-    calc_output, _ = capsys.readouterr()
-
-    assert "Give a mathematical expression to evaluate ('h' help, 'c' cancel):" in calc_output
-    assert "Quitting the program" in calc_output
-
 def test_main_invalid_command(monkeypatch, capsys):
-    user_input = iter(["r", "q"])
+    """Give invalid commands 'r', '4', and 'H'. Then quit with 'q'
+    """
+    user_input = iter(["r", "4", "H", "q"])
     monkeypatch.setattr('builtins.input',lambda _: next(user_input))
 
     main()
     calc_output, _ = capsys.readouterr()
 
     assert "Nice try! That is not a valid command. Try again." in calc_output
+    assert "Give a mathematical expression to evaluate ('h' help, 'c' cancel):" not in calc_output
     assert "Quitting the program" in calc_output
 
 def test_main_validation_error(monkeypatch, capsys):
+    """Induce a validation error with function 'min' that contains too many arguments/commas
+    """
     user_input = iter(["1", "min(1,2,3)", "c", "q"])
     monkeypatch.setattr('builtins.input',lambda _: next(user_input))
 
@@ -121,10 +122,12 @@ def test_main_validation_error(monkeypatch, capsys):
     calc_output, _ = capsys.readouterr()
 
     assert "Validation error" in calc_output
-    assert "Unnecessary commas!" in calc_output
+    assert "Unnecessary commas" in calc_output
     assert "Quitting the program" in calc_output
 
 def test_main_RPN_evaluation_error(monkeypatch, capsys):
+    """Induce an evaluation error with a division with zero
+    """
     user_input = iter(["1", "1/0", "c", "q"])
     monkeypatch.setattr('builtins.input',lambda _: next(user_input))
 
