@@ -34,16 +34,16 @@ class InputValidator:
         self.user_variables.update({var_character: var_value})
 
     def validate_expression(self, user_expression: str) -> list:
-        """Takes the user's mathematical expression as input. Expands all variables used (and
-        recursively) variables in the variables). Ensures the string is not empty and that first
-        and last character are valid. Tokenises the string into a list of str type tokens. Checks
-        for invalid characters that were not tokenised. Finally converts token list to a list of
-        valid tokens.
+        """Takes the user's mathematical expression as input. Checks if the user wants to define a
+        variable. Removes spaces. Ensures the string is not empty and that first and last character
+        are valid. Tokenises the string into a list of str type tokens. Checks for invalid characters
+        that were not tokenised. Finally converts token list to a list of valid tokens.
 
         Args:
         user_expression -- user's mathematical expression
 
-        Returns: The expression as list of valid tokens of type str or float
+        Returns: A tuple containing the expression as list of valid tokens of type str or float and a
+        variable to set or 'None' if none 
         """
         var_to_set = None
 
@@ -190,10 +190,10 @@ class InputValidator:
             raise InvalidExpressionException("The expression contains invalid characters!")
 
     def _validate_tokens(self, tokens: list) -> list:  # pylint: disable=too-many-statements
-        """Takes the tokenised mathematical expression as input. Removes: spaces and commas.
-        Checks for: correctly paired brackets, no consecutive operators, correct number of
-        args for two arg functions (max/min). Attaches unary negative to relevant number or
-        converts it to "n" for clarity. 
+        """Takes the tokenised mathematical expression as input. Removes commas. Checks for: correctly
+        paired brackets, no consecutive operators, correct number of args for two arg functions
+        (max/min). Attaches unary negative to relevant number or converts it to "n" for clarity.
+        Expands variables. Adds brackets to enclose both arguments of 'min'/'max'. Removes commas.
 
         Args:
         tokens -- A list of strings - tokenised version of the user's mathematical expression input
