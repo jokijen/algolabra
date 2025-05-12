@@ -1,6 +1,6 @@
 # Implementation
 
-This document outlines the application implementation and algorithms used.
+This document outlines the structure and algorithms used in the application. Additionally, it provides information on the performance and any deficiencies of the application. 
 
 - [Application structure](#application-structure)
 - [Performance and time complexity](#performance-and-time-complexity)
@@ -11,26 +11,36 @@ This document outlines the application implementation and algorithms used.
 
 ## Application structure
 
-The application code consists of several classes that implement different parts of the full functionality.  
+The application structure is modular and classes are used for implementing different parts of the full functionality.  
 
 
-### Running the app and the user interface
+### Main program and user interface
 
-The user interface (UI) is implemented as a command-line interface (CLI). When the application is run the function `main()` is called. A dictionary for user variables is initialised. The user may interact with the application by giving commands as instructed.
+The user interface (UI) is implemented as a command-line interface (CLI). The user may interact with the application by giving commands as instructed.
+
+The entry point is the `main()` function in `ui.py`. When run, a dictionary `USER_VARS` for user variables is also initialised. 
 
 
-### Solving a mathematical expression
+### Mathematical expression processing
 
-The user may input a mathematical expression that they wish to solve. The expression input must be in proper infix form (i.e. operators within the expression, such as `1 + 2 * 3`). They may use integers and floating points numbers, as well as operators (`+`, `-`, `*`, `/`, `**`) and functions (`cos`, `sin`, `sqrt`, `max`, `min`). Input validity also calls for correctly placed parentheses (e.g. to enforce precedence or enclose a negative number).
+The user may give a mathematical expression that they wish to solve as input. The expression input must be in a valid infix form (i.e. operators within the expression, such as `1 + 2 * 3`). They may use integers and floating points numbers, as well as operators (`+`, `-`, `*`, `/`, `**`) and functions (`cos`, `sin`, `sqrt`, `max`, `min`). Input validity also calls for correctly placed parentheses (e.g. to enforce precedence or enclose a negative number).
 
-The user's expression is first validated and tokenised using the InputValidator. After this the Shunting-Yard algorithm (class: ShuntingYard) is used to convert the expression into Reverse Polish Notation (RPN) (aka postfix) where operators follow the numbers/operands (such as in the example given in the last paragraph `1 2 3 * +`). The Shunting-Yard algorithm uses a FIFO Queue and LIFO Stack for token handling. 
+#### Pipeline 
 
-Finally, the RPN form expression is evaluated using the RPNEvaluator. If the expression was valid, a value is returned to the user. Otherwise the user will receive an error message outlining the issue with the input or process.
+1. The user's expression is validated and tokenised using the `InputValidator` class.
+
+2. The Shunting-Yard algorithm (class: `ShuntingYard`) is used to convert the expression into Reverse Polish Notation (RPN) (aka postfix) where operators follow the numbers/operands (such as in the example given in the last paragraph `1 2 3 * +`). The Shunting-Yard algorithm uses a FIFO Queue and LIFO Stack for token handling. 
+
+3. The RPN form expression is evaluated using the `RPNEvaluator`. If the expression was valid, a value is returned to the user. Otherwise the user will receive an error message outlining the issue with the input or process. 
+
+4. If the input included variable assignment, the result is stored in the dictionary `USER_VARS` with the variable as key and result as value. 
 
 
 ### User variables
 
-The user may set a variable by defining the variable they want to set (i.e. capital ASCII letter, A-Z) in their mathematical expression. Example: The mathematical expression input `A=1+2` would set variable `A` to have the value `3`. 
+The user may set a variable by defining the variable they want to set (i.e. capital ASCII letter, A-Z) in their mathematical expression. Example: The mathematical expression input `A = 1 + 2` would set variable `A` to have the value `3`. The variable is set in the "Mathematical expression processing" [pipeline](#pipeline) above. 
+
+The user may use any set variables in subsequent expressions, e.g. `3 + A * 1` if `A` has been set.
 
 The user may also view the variables saved in the variables dictionary. 
 

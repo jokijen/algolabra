@@ -110,14 +110,13 @@ The test cases located in `test_ui.py` contain various types of user interaction
 
 The following user inputs were tested: 
 
-* `["1", "1 + 2 * (-5.5)", "q"]`
-* `["1", "5*25/900*sqrt(9)+min(sin(60),1)", "q"]`
-* `["2", "1", "A=sqrt(9)", "2", "1", "A=2**(-3)", "y", "2", "1", "A=pi", "b", "B", "2", "1", "B=6", "n", "2", "q"]`
-* `["1", "h", "c", "q"]`
-* `["1", "c", "q"]`
-* `["r", "q"]`
-* `["1", "min(1,2,3)", "c", "q"]`
-* `["1", "1/0", "c", "q"]`
+* test_main_with_simple_expression `["1", "1 + 2 * (-5.55)", "q"]`
+* test_main_with_complex_expression `["1", "5*25/900*sqrt(9)+min(sin(60),1)", "q"]`
+* test_main_view_and_set_variables `["2", "1", "A=sqrt(9)", "2", "1", "A=2**(-3)", "y", "2", "1", "A=pi", "b", "B", "2", "1", "B=6", "n", "2", "q"]`
+* test_main_help `["1", "h", "c", "q"]`
+* test_main_invalid_command `["r", "4", "H", "q"]`
+* test_main_validation_error `["1", "min(1,2,3)", "c", "q"]`
+* test_main_RPN_evaluation_error `["1", "1/0", "c", "q"]`
 
 
 ## Continuous integration GitHub Actions
