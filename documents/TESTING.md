@@ -126,11 +126,11 @@ A continuous integration (CI) workflow for testing is implemented with GitHub Ac
 The coverage report can be found on [Codecov](https://app.codecov.io/gh/jokijen/algolabra).
 
 
-## Running the tests
+## Running tests
 
-After setting up the application with the instructions found in [USAGE.md](USAGE.md), you can run the tests with: 
+After setting up the application and activating the Poetry environment using the instructions found in [USAGE.md](USAGE.md), you can run the tests with: 
 ```
-poetry pytest
+pytest
 ```
 
 
